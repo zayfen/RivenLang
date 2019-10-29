@@ -54,7 +54,7 @@ pub enum Token {
   RBrace, // }
   Dot, // .
   Semicolon, // ;
-  Comma // ;
+  Comma // ,
 }
 
 impl fmt::Display for Token {
@@ -72,7 +72,43 @@ impl fmt::Display for Token {
       For => f.write_str("For"),
       In => f.write_str("In"),
       While => f.write_str("While"),
-      
+      If => f.write_str("If"),
+      Elif => f.write_str("Elif"),
+      Else => f.write_str("Else"),
+      Struct => f.write_str("Struct"),
+      None => f.write_str("None"),
+      True => f.write_str("True"),
+      False => f.write_str("False"),
+      Return => f.write_str("Return"),
+      Break => f.write_str("Break"),
+      Continue => f.write_str("Continue"),
+      Plus => f.write_str("+"),
+      Minus => f.write_str("-"),
+      Star => f.write_str("*"),
+      Slash => f.write_str("/"),
+      Percent => f.write_str("%"),
+      Vbar => f.write_str("|"),
+      Amper => f.write_str("&"),
+      Tilde => f.write_str("~"),
+      Power => f.write_str("^"),
+      LeftShift => f.write_str("<<"),
+      RightShift => f.write_str(">>"),
+      DoubleAmper => f.write_str("&&"),
+      DoubleVbar => f.write_str("||"),
+      Exclamation => f.write_str("!"),
+      Greater => f.write_str(">"),
+      Less => f.write_str("<"),
+      Equal => f.write_str("="),
+      DoubleEqual => f.write_str("=="),
+      LPar => f.write_str("("),
+      RPar => f.write_str(")"),
+      LBracket => f.write_str("["),
+      RBracket => f.write_str("]"),
+      LBrace => f.write_str("{"),
+      RBrace => f.write_str("}"),
+      Dot => f.write_str("."),
+      Semicolon => f.write_str(";"),
+      Comma => f.write_str(",")
     }
   }
 }
