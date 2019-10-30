@@ -3,12 +3,28 @@ use num_bigint::BigInt;
 
 use std::fmt::{self, Write};
 
+#[derive(Clone, Debug, PartialEq)]
+pub enum NumberType {
+  Int,
+  Float,
+  Complex
+}
+
+impl fmt::Display for NumberType {
+  fn fmt (&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    match self {
+      NumberType::Int => write!(f, "int"),
+      NumberType::Float => write!(f, "float"),
+      NumberType::Complex => write!(f, "complex")
+    }
+  }
+}
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Token {
   // words
   Id { name: String },
-  Number { value: BigInt },
+  Number { number_type: NumberType, int: BigInt, float: f64 },
   String { value: String },
   Bool { value: bool },
   Byte { value: u8 },
@@ -63,7 +79,13 @@ impl fmt::Display for Token {
     use Token::*;
     match self {
       Id { name } => write!(f, "'{}'", name),
-      Number { value } => write!(f, "'{}'", value),
+      Number { int, float, number_type } => {
+        match number_type {
+          NumberType::Int => write!(f, "{}({})", number_type, int),
+          NumberType::Float => write!(f, "{}({})", number_type, float),
+          NumberType::Complex => write!(f, "{}({})", number_type, "Unsupport yet!"),
+        }
+      },
       String { value } => write!(f, "{}", value),
       Bool { value } => write!(f, "{}", value),
       Byte { value } => write!(f, "{}", value),
@@ -73,7 +95,7 @@ impl fmt::Display for Token {
       In => f.write_str("In"),
       While => f.write_str("While"),
       If => f.write_str("If"),
-      Elif => f.write_str("Elif"),
+      ElIf => f.write_str("Elif"),
       Else => f.write_str("Else"),
       Struct => f.write_str("Struct"),
       None => f.write_str("None"),

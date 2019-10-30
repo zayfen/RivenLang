@@ -41,7 +41,7 @@ impl fmt::Display for LexicalErrorType {
 
 impl From<LexicalError> for LalrpopError<Location, Tok, LexicalError> {
   fn from (err: LexicalError) -> Self {
-    lalrpop_util::ParseError::User { error： err }
+    lalrpop_util::ParseError::User { error: err }
   }
 }
 

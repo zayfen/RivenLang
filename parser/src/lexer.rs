@@ -1,6 +1,6 @@
 use crate::location::Location;
 use crate::error::{ LexicalError, LexicalErrorType };
-pub use super::token::Token;
+pub use super::token::{Token, NumberType};
 use num_bigint::BigInt;
 use num_traits::identities::Zero;
 use num_traits::Num;
@@ -8,6 +8,7 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::str::FromStr;
 use std::char;
+use unicode_xid::UnicodeXID;
 
 
 pub type Spanned = (Location, Token, Location);
@@ -50,9 +51,9 @@ pub fn get_keywords () -> HashMap<String, Token> {
 }
 
 
-pub fn make_tokenizer<'a> (source: &'a str) -> impl Iterator<LexResult> + 'a {
+pub fn make_tokenizer<'a> (source: &'a str) -> impl Iterator<Item = LexResult> + 'a {
   let nlh = NewlineHandler::new(source.chars());
-  let lch = LineContainerHandler::new(nlh);
+  let lch = LineContinationHandler::new(nlh);
   Lexer::new(lch)
 }
 
@@ -71,13 +72,13 @@ where T: Iterator<Item = char>
       source,
       char0: None,
       char1: None,
-    }
+    };
     nlh.shift();
     nlh.shift();
     nlh
   }
 
-  pub fn shift (&mut self) Option<char> {
+  pub fn shift (&mut self) -> Option<char> {
     let c = self.char0;
     self.char0 = self.char1;
     self.char1 = self.source.next();
@@ -90,7 +91,8 @@ impl<T> Iterator for NewlineHandler<T>
 where T: Iterator<Item = char>
 {
   type Item = char;
-  pub fn next (&mut self) -> Option<Self::Item> {
+
+  fn next (&mut self) -> Option<Self::Item> {
     loop {
       if self.char0 == Some('\r') {
 
@@ -108,8 +110,355 @@ where T: Iterator<Item = char>
 
     self.shift()
   }
+
+}
+
+// Glues \ and \n into a single line
+pub struct LineContinationHandler<T: Iterator<Item = char>> {
+  source: T,
+  char0: Option<char>,
+  char1: Option<char>,
+}
+
+impl<T> LineContinationHandler<T>
+where
+  T: Iterator<Item = char>
+{
+  pub fn new (source: T) -> Self {
+    let mut nlh = LineContinationHandler {
+      source,
+      char0: None,
+      char1: None
+    };
+    nlh.shift();
+    nlh.shift();
+    nlh
+  }
+
+
+  fn shift (&mut self) -> Option<char> {
+    let c = self.char0;
+    self.char0 = self.char1;
+    self.char1 = self.source.next();
+    c
+  }
+}
+
+impl<T> Iterator for LineContinationHandler<T>
+where
+  T: Iterator<Item = char>
+{
+  type Item = char;
+
+  fn next (&mut self) -> Option<Self::Item> {
+    // Collapse \r\n into \n
+    loop {
+      if self.char0 == Some('\\') && self.char1 == Some('\n') {
+        // skip backslash and newline
+        self.shift();
+        self.shift();
+      } else {
+        break;
+      }
+    }
+
+    self.shift()
+  }
+}
+
+
+impl<T> Lexer<T>
+where
+  T: Iterator<Item = char>
+{
+  pub fn new (input: T) -> Self {
+    let mut lexer = Lexer {
+      chars: input,
+      at_begin_of_line: true,
+      nesting: 0,
+      pending: Vec::new(),
+      char0: None,
+      location: Location::new(0, 0),
+      char1: None,
+      char2: None,
+      keywords: get_keywords()
+    };
+
+    lexer.next_char();
+    lexer.next_char();
+    lexer.next_char();
+
+    lexer.location.reset();
+    lexer
+  }
+
+
+  fn next_char (&mut self) -> Option<char> {
+    let c = self.char0;
+    let next = self.chars.next();
+    self.char0 = self.char1;
+    self.char1 = self.char2;
+    self.char2 = next;
+    if c == Some('\n') {
+      self.location.newline();
+    } else {
+      self.location.forward();
+    }
+
+    c
+  }
+
+  fn get_pos (&self) -> Location {
+    self.location.clone()
+  }
+
+
+  fn emit (&mut self, spanned: Spanned) {
+    self.pending.push(spanned);
+  }
+
+  fn inner_next (&mut self) -> LexResult {
+    while self.pending.is_empty() {
+      self.consume_normal()?;
+    }
+
+    Ok(self.pending.remove(0))
+  }
+
+  fn is_identifier_start (&self, c: char) -> bool {
+    match c {
+      '_' => true,
+      c => UnicodeXID::is_xid_start(c),
+    }
+  }
+
+  fn is_identifier_continuation (&self) -> bool {
+    if let Some(c) = self.char0 {
+      match c {
+        '_' | '0'..='9' => true,
+        c => UnicodeXID::is_xid_continue(c),
+      }
+    } else {
+       false
+    }
+  }
+
+  fn consume_normal (&mut self) -> Result<(), LexicalError> {
+    if let Some(c) = self.char0 {
+      if self.is_identifier_start(c) {
+        self.lex_identifier();
+      } else {
+        self.consume_character(c)?;
+      }
+      
+    } else {
+      // we reached end of file.
+      let pos = self.get_pos();
+ 
+      self.emit((pos.clone(), Token::EndOfFile, pos.clone()));
+    }
+
+    Ok(())
+  }
+
+  // resolve tokens
+
+  fn lex_identifier (&mut self) -> LexResult {
+    let mut name = String::new();
+    let start_pos = self.get_pos().clone();
+    while self.is_identifier_continuation() {
+      name.push(self.next_char().unwrap());
+    }
+    let end_pos = self.get_pos().clone();
+
+    if self.keywords.contains_key(&name) {
+      Ok(( start_pos, self.keywords[&name].clone(), end_pos))
+    } else {
+      Ok(( start_pos, Token::Id { name: name }, end_pos ))
+    }
+  }
+
+
+  fn lex_number (&mut self) -> LexResult {
+    let start_pos = self.get_pos();
+    if self.char0 == Some('0') {
+      if self.char1 == Some('x') || self.char1 == Some('X') {
+        // Hex
+        self.next_char();
+        self.next_char();
+        self.lex_number_radix(start_pos, 16)
+
+      } else if self.char1 == Some('o') || self.char1 == Some('O') {
+        // Octal
+        self.next_char();
+        self.next_char();
+        self.lex_number_radix(start_pos, 8)
+
+      } else if self.char1 == Some('b') || self.char1 == Some('B') {
+        // Binary
+        self.next_char();
+        self.next_char();
+        self.lex_number_radix(start_pos, 2)
+
+      } else {
+        self.lex_normal_number()
+      }
+    } else {
+      self.lex_normal_number()
+    } 
+  }
+
+  fn lex_number_radix(&mut self, start_pos: Location, radix: u32) -> LexResult {
+    let value_text = self.radix_run(radix);
+    let end_pos = self.get_pos();
+    let value = BigInt::from_str_radix(&value_text, radix).map_err(|e| LexicalError {
+      error: LexicalErrorType::OtherError(format!("{:?}", e)),
+      location: start_pos.clone(),
+    })?;
+    Ok((start_pos, Token::Number { int: value, number_type: NumberType::Int, float: 0f64 }, end_pos))
+  }
+
+  fn radix_run (&mut self, radix: u32) -> String {
+    let mut value_text = String::new();
+
+    loop {
+      if let Some(c) = self.take_number(radix) {
+        value_text.push(c);
+
+      } else if self.char0 == Some('_') && Lexer::<T>::is_digit_of_radix(self.char1, radix) {
+        self.next_char();
+
+      } else {
+        break;
+      }
+    }
+
+    value_text
+  }
+
+  /// Consume a single character with the given radix.
+  fn take_number(&mut self, radix: u32) -> Option<char> {
+    let take_char = Lexer::<T>::is_digit_of_radix(self.char0, radix);
+
+    if take_char {
+      Some(self.next_char().unwrap())
+    } else {
+      None
+    }
+  }
+
+  /// Test if a digit is of a certain radix.
+  fn is_digit_of_radix(c: Option<char>, radix: u32) -> bool {
+    match radix {
+      2 => match c {
+        Some('0'..='1') => true,
+        _ => false,
+      },
+      8 => match c {
+        Some('0'..='7') => true,
+        _ => false,
+      },
+      10 => match c {
+        Some('0'..='9') => true,
+        _ => false,
+      },
+      16 => match c {
+        Some('0'..='9') | Some('a'..='f') | Some('A'..='F') => true,
+        _ => false,
+      },
+      x => unimplemented!("Radix not implemented: {}", x),
+    }
+  }
+
+  fn at_exponent (&self) -> bool {
+    match self.char0 {
+      Some('e') | Some('E') => match self.char1 {
+        Some('+') | Some('-') => match self.char2 {
+          Some('0'..='9') => true,
+          _ => false
+        },
+        Some('0'..='9') => true,
+        _ => false,
+      },
+
+      _ => false,
+    }
+  }
+
+  fn lex_normal_number (&mut self) -> LexResult {
+    let start_pos = self.get_pos();
+    let start_is_zero = self.char0 == Some('0');
+    let mut value_text = self.radix_run(10);
+
+    if self.char0 == Some('.') || self.at_exponent() {
+
+      if self.char0 == Some('.') {
+        if self.char1 == Some('_') {
+          return Err(LexicalError {
+            error: LexicalErrorType::OtherError("Invalid Syntax".to_owned()),
+            location: self.get_pos()
+          })
+        }
+        value_text.push(self.next_char().unwrap());
+        value_text.push_str(&self.radix_run(10));
+      }
+
+      if self.char0 == Some('e') || self.char0 == Some('E') {
+        value_text.push(self.next_char().unwrap().to_ascii_lowercase());
+
+        if self.char0 == Some('-') || self.char0 == Some('+') {
+          value_text.push(self.next_char().unwrap());
+        }
+
+        value_text.push_str(&self.radix_run(10));
+      }
+
+      let value = f64::from_str(&value_text).unwrap();
+      let end_pos = self.get_pos();
+      Ok((start_pos, Token::Number { number_type }, end_pos ));
+    } // outer if
+  }
+
+  fn lex_string (&mut self) -> LexResult {
+    
+  }
+
+
+  fn consume_character (&mut self, c: char) -> Result<(), LexicalError> {
+    match c {
+      '0'..='9' => {
+        // number
+        let number = self.lex_number()?;
+        self.emit(number);
+      },
+      '"' | '\'' => {
+        // string
+        let string = self.lex_string()?;
+        self.emit(string);
+      }
+    }
+    Ok(())
+  }
   
 }
+
+
+impl<T> Iterator for Lexer<T>
+where
+  T: Iterator<Item = char>
+{
+  type Item = LexResult;
+
+  fn next (&mut self) -> Option<Self::Item> {
+    let token = self.inner_next();
+    trace!("Lex token {:?}, nesting={:?}", token, self.nesting);
+    match token {
+      Ok((_, Token::EndOfFile, _)) => None,
+      result => Some(result),
+    }
+  }
+}
+
 
 
 
