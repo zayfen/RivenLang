@@ -415,32 +415,106 @@ where
 
       let value = f64::from_str(&value_text).unwrap();
       let end_pos = self.get_pos();
-      Ok((start_pos, Token::Number { number_type }, end_pos ));
-    } // outer if
+      Ok((start_pos, Token::Number { number_type: NumberType::Float, float: value, int: BigInt::from_str("0").unwrap() }, end_pos ))
+
+    } else {
+      let end_pos = self.get_pos();
+      let value = value_text.parse::<BigInt>().unwrap();
+      if start_is_zero && !value.is_zero() {
+        return Err(LexicalError {
+          error: LexicalErrorType::OtherError("Invalid Token".to_string()),
+          location: self.get_pos(),
+        })
+      }
+      Ok((start_pos, Token::Number{ number_type: NumberType::Int, int: value, float: 0f64 }, end_pos))
+    }
   }
+
 
   fn lex_string (&mut self) -> LexResult {
-    
-  }
+    let quote_char = self.next_char().unwrap();
+    let mut value_text = String::new();
 
+    loop {
+      match self.next_char() {
+        Some('\\') => {
+          if self.char0 == Some(quote_char) {
+            value_text.push(quote_char);
+            self.next_char();
 
-  fn consume_character (&mut self, c: char) -> Result<(), LexicalError> {
-    match c {
-      '0'..='9' => {
-        // number
-        let number = self.lex_number()?;
-        self.emit(number);
-      },
-      '"' | '\'' => {
-        // string
-        let string = self.lex_string()?;
-        self.emit(string);
+          } else {
+            match self.next_char() {
+              Some('\\') => {
+                value_text.push('\\');
+              }
+              Some('\'') => value_text.push('\''),
+              Some('\"') => value_text.push('\"'),
+              Some('\n') => {
+                // Ignore Unix EOL character
+              }
+              Some('a') => value_text.push('\x07'),
+              Some('b') => value_text.push('\x08'),
+              Some('f') => value_text.push('\x0c'),
+              Some('n') => {
+                value_text.push('\n');
+              }
+              Some('r') => value_text.push('\r'),
+              Some('t') => {
+                value_text.push('\t');
+              }
+              Some('u') => value_text.push(self.unicode_literal(4)?),
+              Some('U') => value_text.push(self.unicode_literal(8)?),
+              Some('x') if !is_bytes => value_text.push(self.unicode_literal(2)?),
+              Some('v') => value_text.push('\x0b'),
+              Some(c) => {
+                value_text.push('\\');
+                value_text.push(c);
+              }
+              None => {
+                return Err(LexicalError {
+                  error: LexicalErrorType::StringError,
+                  location: self.get_pos(),
+                });
+              }
+              
+            }
+          },
+
+          Some(c) => {
+            if c == quote_char {
+              break;
+
+            } else {
+              if c == '\n' {
+                return Err(LexicalError {
+                  error: LexicalErrorType::StringError,
+                  location: self.get_pos(),
+                })
+              }
+            }
+          }
+        }
       }
     }
-    Ok(())
+
+
+    fn consume_character (&mut self, c: char) -> Result<(), LexicalError> {
+      match c {
+        '0'..='9' => {
+          // number
+          let number = self.lex_number()?;
+          self.emit(number);
+        },
+        '"' | '\'' => {
+          // string
+          let string = self.lex_string()?;
+          self.emit(string);
+        }
+      }
+      Ok(())
+    }
+    
   }
-  
-}
 
 
 impl<T> Iterator for Lexer<T>
