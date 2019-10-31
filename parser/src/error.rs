@@ -16,11 +16,11 @@ pub struct LexicalError {
 #[derive(Debug, PartialEq)]
 pub enum LexicalErrorType {
   StringError,
-  UnicodeEror,
+  UnicodeError,
   DefaultArgumentError,
   PositionalArgumentError,
   DuplicateKeywordArgumentError,
-  UnrecognizedToken { tok: char },
+  UnrecognizedToken { token: char },
   OtherError(String)
 }
 
@@ -28,7 +28,7 @@ impl fmt::Display for LexicalErrorType {
   fn fmt (&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
       LexicalErrorType::StringError => write!(f, "Got unexpected string"),
-      LexicalErrorType::UnicodeEror => write!(f, "Got unexpected unicode"),
+      LexicalErrorType::UnicodeError => write!(f, "Got unexpected unicode"),
       LexicalErrorType::DefaultArgumentError => write!(f, "non-default argument follows default argument"),
       LexicalErrorType::PositionalArgumentError => write!(f, "positional argument follows keyword argument"),
       LexicalErrorType::DuplicateKeywordArgumentError => write!(f, "keyword arguemnt repeated"),
@@ -39,7 +39,7 @@ impl fmt::Display for LexicalErrorType {
 }
 
 
-impl From<LexicalError> for LalrpopError<Location, Tok, LexicalError> {
+impl From<LexicalError> for LalrpopError<Location, Token, LexicalError> {
   fn from (err: LexicalError) -> Self {
     lalrpop_util::ParseError::User { error: err }
   }

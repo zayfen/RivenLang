@@ -38,11 +38,10 @@ pub enum Token {
   Else,
   Struct,
   None,
-  True,
-  False,
   Return,
   Break,
   Continue,
+  Comment { value: String },
   // symboles
   Plus, // +
   Minus, // -
@@ -99,8 +98,6 @@ impl fmt::Display for Token {
       Else => f.write_str("Else"),
       Struct => f.write_str("Struct"),
       None => f.write_str("None"),
-      True => f.write_str("True"),
-      False => f.write_str("False"),
       Return => f.write_str("Return"),
       Break => f.write_str("Break"),
       Continue => f.write_str("Continue"),

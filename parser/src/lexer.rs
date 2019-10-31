@@ -41,8 +41,8 @@ pub fn get_keywords () -> HashMap<String, Token> {
   keywords.insert(String::from("else"), Token::Else);
   keywords.insert(String::from("struct"), Token::Struct);
   keywords.insert(String::from("None"), Token::None);
-  keywords.insert(String::from("True"), Token::True);
-  keywords.insert(String::from("False"), Token::False);
+  keywords.insert(String::from("True"), Token::Bool { value: true });
+  keywords.insert(String::from("False"), Token::Bool { value: false });
   keywords.insert(String::from("return"), Token::Return);
   keywords.insert(String::from("break"), Token::Break);
   keywords.insert(String::from("continue"), Token::Continue);
@@ -239,7 +239,7 @@ where
         c => UnicodeXID::is_xid_continue(c),
       }
     } else {
-       false
+      false
     }
   }
 
@@ -254,7 +254,7 @@ where
     } else {
       // we reached end of file.
       let pos = self.get_pos();
- 
+      
       self.emit((pos.clone(), Token::EndOfFile, pos.clone()));
     }
 
@@ -431,9 +431,33 @@ where
   }
 
 
+  fn unicode_literal (&self, literal_number: usize) -> Result<char, LexicalError> {
+    let mut p: u32 = 0u32;
+    let unicode_error = Err(LexicalError {
+      error: LexicalErrorType::UnicodeError,
+      location: self.get_pos(),
+    });
+    for i in 1..= literal_number {
+      match self.next_char() {
+        Some(c) => match c.to_digit(16) {
+          Some(d) => p += d << ((literal_number - i) * 4),
+          None => return unicode_error,
+        },
+        None => return unicode_error,
+      }
+    }
+    match wtf8::CodePoint::from_u32(p) {
+      Some(cp) => Ok(cp.to_char_lossy()),
+      None => unicode_error,
+    }
+  }
+
+
+  // lex_string
   fn lex_string (&mut self) -> LexResult {
     let quote_char = self.next_char().unwrap();
     let mut value_text = String::new();
+    let start_pos = self.get_pos();
 
     loop {
       match self.next_char() {
@@ -444,7 +468,7 @@ where
 
           } else {
             match self.next_char() {
-              Some('\\') => {
+              Some('\\') => { 
                 value_text.push('\\');
               }
               Some('\'') => value_text.push('\''),
@@ -464,7 +488,7 @@ where
               }
               Some('u') => value_text.push(self.unicode_literal(4)?),
               Some('U') => value_text.push(self.unicode_literal(8)?),
-              Some('x') if !is_bytes => value_text.push(self.unicode_literal(2)?),
+              Some('x') => value_text.push(self.unicode_literal(2)?),
               Some('v') => value_text.push('\x0b'),
               Some(c) => {
                 value_text.push('\\');
@@ -478,43 +502,282 @@ where
               }
               
             }
-          },
+          }
+        },
 
-          Some(c) => {
-            if c == quote_char {
-              break;
-
-            } else {
-              if c == '\n' {
-                return Err(LexicalError {
-                  error: LexicalErrorType::StringError,
-                  location: self.get_pos(),
-                })
-              }
+        Some(c) => {
+          if c == quote_char {
+            break;
+            
+          } else {
+            if c == '\n' {
+              return Err(LexicalError {
+                error: LexicalErrorType::StringError,
+                location: self.get_pos(),
+              })
             }
           }
+        },
+        
+        None => {
+          return Err(LexicalError {
+            error: LexicalErrorType::StringError,
+            location: self.get_pos(),
+          })
         }
       }
     }
 
+    let end_pos = self.get_pos();
+    let token = Token::String { value: value_text };
+    Ok((start_pos, token, end_pos))
+  }
 
-    fn consume_character (&mut self, c: char) -> Result<(), LexicalError> {
-      match c {
-        '0'..='9' => {
-          // number
+  fn lex_comment (&mut self) -> LexResult {
+
+    let start_pos = self.get_pos();
+    let mut value_text = String::new();
+
+    loop {
+      if self.char0 == Some('\n') {
+        // emit Comment Token here
+        break;
+      } else {
+        value_text.push(self.char0.unwrap());
+        self.next_char();
+      }
+    }
+
+    let end_pos = self.get_pos();
+    let commentToken = Token::Comment { value: value_text };
+    Ok((start_pos, commentToken, end_pos))
+  }
+
+
+  fn eat_single_char (&mut self, token: Token) {
+    let start_pos = self.get_pos();
+    self.next_char();
+    let end_pos = self.get_pos();
+    self.emit((start_pos, token, end_pos));
+  }
+
+
+  fn consume_character (&mut self, c: char) -> Result<(), LexicalError> {
+    match c {
+      '0'..='9' => {
+        // number
+        let number = self.lex_number()?;
+        self.emit(number);
+      }
+
+      '"' | '\'' => {
+        // string
+        let string = self.lex_string()?;
+        self.emit(string);
+      }
+      
+      '/' => {
+        let start_pos = self.get_pos();
+        self.next_char();
+        if self.char0 == Some('/') {
+          self.next_char();
+          let comment = self.lex_comment()?;
+          self.emit(comment);
+          self.next_char();
+
+        } else {
+          let end_pos = self.get_pos();
+          self.emit((start_pos, Token::Slash, end_pos));
+        }
+      }
+
+      '=' => {
+        let start_pos = self.get_pos();
+        self.next_char();
+        match self.char0 {
+          Some('=') => {
+            self.next_char();
+            let end_pos = self.get_pos();
+            self.emit((start_pos, Token::DoubleEqual, end_pos));
+          }
+          _ => {
+            let end_pos = self.get_pos();
+            self.emit((start_pos, Token::Equal, end_pos));
+          }
+        }
+      } // end of =
+
+      '+' => {
+        let start_pos = self.get_pos();
+        self.next_char();
+        let end_pos = self.get_pos();
+        self.emit((start_pos, Token::Plus, end_pos));
+      }
+
+      '-' => {
+        let start_pos = self.get_pos();
+        self.next_char();
+        let end_pos = self.get_pos();
+        self.emit((start_pos, Token::Minus, end_pos));
+      }
+
+      '*' => {
+        let start_pos = self.get_pos();
+        self.next_char();
+        let end_pos = self.get_pos();
+        self.emit((start_pos, Token::Star, end_pos));
+      }
+
+      '%' => {
+        let start_pos = self.get_pos();
+        self.next_char();
+        let end_pos = self.get_pos();
+        self.emit((start_pos, Token::Percent, end_pos));
+      }
+
+      '|' => {
+        let start_pos = self.get_pos();
+        self.next_char();
+        if let Some('|') = self.char0 {
+          self.next_char();
+          let end_pos = self.get_pos();
+          self.emit((start_pos, Token::DoubleVbar, end_pos));
+
+        } else {
+          let end_pos = self.get_pos();
+          self.emit((start_pos, Token::Vbar, end_pos));
+        }
+      }
+
+      '&' => {
+        let start_pos = self.get_pos();
+        self.next_char();
+        if let Some('&') = self.char0 {
+          self.next_char();
+          let end_pos = self.get_pos();
+          self.emit((start_pos, Token::DoubleAmper, end_pos));
+
+        } else {
+          let end_pos = self.get_pos();
+          self.emit((start_pos, Token::Amper, end_pos));
+        }
+      }
+
+      '~' => {
+        let start_pos = self.get_pos();
+        self.next_char();
+        let end_pos = self.get_pos();
+        self.emit((start_pos, Token::Tilde, end_pos));
+      }
+
+      '^' => {
+        let start_pos = self.get_pos();
+        self.next_char();
+        let end_pos = self.get_pos();
+        self.emit((start_pos, Token::Power, end_pos));
+      }
+
+      '<' => {
+        let start_pos = self.get_pos();
+        self.next_char();
+        if let Some('<') = self.char0 {
+          self.next_char();
+          let end_pos = self.get_pos();
+          self.emit((start_pos, Token::LeftShift, end_pos));
+
+        } else {
+          let end_pos = self.get_pos();
+          self.emit((start_pos, Token::Less, end_pos));
+        }
+      }
+
+      '>' => {
+        let start_pos = self.get_pos();
+        self.next_char();
+        if let Some('>') = self.char0 {
+          self.next_char();
+          let end_pos = self.get_pos();
+          self.emit((start_pos, Token::RightShift, end_pos));
+
+        } else {
+          let end_pos = self.get_pos();
+          self.emit((start_pos, Token::Greater, end_pos));
+        }
+      }
+
+      '!' => {
+        self.eat_single_char(Token::Exclamation);
+      }
+      
+      '(' => {
+        let start_pos = self.get_pos();
+        self.next_char();
+        let end_pos = self.get_pos();
+        self.emit((start_pos, Token::LPar, end_pos));
+      }
+
+      ')' => {
+        let start_pos = self.get_pos();
+        self.next_char();
+        let end_pos = self.get_pos();
+        self.emit((start_pos, Token::RPar, end_pos));
+        
+      }
+
+      '[' => {
+        let start_pos = self.get_pos();
+        self.next_char();
+        let end_pos = self.get_pos();
+        self.emit((start_pos, Token::LBracket, end_pos));
+
+      }
+
+      ']' => {
+        let start_pos = self.get_pos();
+        self.next_char();
+        let end_pos = self.get_pos();
+        self.emit((start_pos, Token::RBracket, end_pos));
+
+      }
+
+      '{' => {
+        let start_pos = self.get_pos();
+        self.next_char();
+        let end_pos = self.get_pos();
+        self.emit((start_pos, Token::LBrace, end_pos));
+
+      }
+
+      '}' => {
+        let start_pos = self.get_pos();
+        self.next_char();
+        let end_pos = self.get_pos();
+        self.emit((start_pos, Token::RBrace, end_pos));
+        
+      }
+
+      '.' => {
+        if let Some('0'..='9') = self.char1 {
           let number = self.lex_number()?;
           self.emit(number);
-        },
-        '"' | '\'' => {
-          // string
-          let string = self.lex_string()?;
-          self.emit(string);
+        } else {
+          self.eat_single_char(Token::Dot);
         }
+        
       }
-      Ok(())
+
+      ';' => {
+        self.eat_single_char(Token::Semicolon);
+      }
+
+      ',' => {
+        self.eat_single_char(Token::Comma);
+      }
     }
-    
+    Ok(())
   }
+  
+}
 
 
 impl<T> Iterator for Lexer<T>
