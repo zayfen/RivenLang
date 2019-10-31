@@ -431,7 +431,7 @@ where
   }
 
 
-  fn unicode_literal (&self, literal_number: usize) -> Result<char, LexicalError> {
+  fn unicode_literal (&mut self, literal_number: usize) -> Result<char, LexicalError> {
     let mut p: u32 = 0u32;
     let unicode_error = Err(LexicalError {
       error: LexicalErrorType::UnicodeError,
@@ -549,8 +549,8 @@ where
     }
 
     let end_pos = self.get_pos();
-    let commentToken = Token::Comment { value: value_text };
-    Ok((start_pos, commentToken, end_pos))
+    let comment_token = Token::Comment { value: value_text };
+    Ok((start_pos, comment_token, end_pos))
   }
 
 
@@ -698,50 +698,52 @@ where
       }
       
       '(' => {
-        let start_pos = self.get_pos();
-        self.next_char();
-        let end_pos = self.get_pos();
-        self.emit((start_pos, Token::LPar, end_pos));
+        self.eat_single_char(Token::LPar);
+        self.nesting += 1;
       }
 
       ')' => {
-        let start_pos = self.get_pos();
-        self.next_char();
-        let end_pos = self.get_pos();
-        self.emit((start_pos, Token::RPar, end_pos));
+        self.eat_single_char(Token::RPar);
+        if self.nesting == 0 {
+          return Err(LexicalError {
+            error: LexicalErrorType::NestingError,
+            location: self.get_pos(),
+          })
+        }
+        self.nesting -= 1;
         
       }
 
       '[' => {
-        let start_pos = self.get_pos();
-        self.next_char();
-        let end_pos = self.get_pos();
-        self.emit((start_pos, Token::LBracket, end_pos));
-
+        self.eat_single_char(Token::LBracket);
+        self.nesting += 1;
       }
 
       ']' => {
-        let start_pos = self.get_pos();
-        self.next_char();
-        let end_pos = self.get_pos();
-        self.emit((start_pos, Token::RBracket, end_pos));
-
+        self.eat_single_char(Token::RBracket);
+        if self.nesting == 0 {
+          return Err(LexicalError {
+            error: LexicalErrorType::NestingError,
+            location: self.get_pos(),
+          })
+        }
+        self.nesting -= 1;
       }
 
       '{' => {
-        let start_pos = self.get_pos();
-        self.next_char();
-        let end_pos = self.get_pos();
-        self.emit((start_pos, Token::LBrace, end_pos));
-
+        self.eat_single_char(Token::LBrace);
+        self.nesting += 1;
       }
 
       '}' => {
-        let start_pos = self.get_pos();
-        self.next_char();
-        let end_pos = self.get_pos();
-        self.emit((start_pos, Token::RBrace, end_pos));
-        
+        self.eat_single_char(Token::RBrace);
+        if self.nesting == 0 {
+          return Err(LexicalError {
+            error: LexicalErrorType::NestingError,
+            location: self.get_pos(),
+          })
+        }
+        self.nesting -= 1;
       }
 
       '.' => {
@@ -760,6 +762,32 @@ where
 
       ',' => {
         self.eat_single_char(Token::Comma);
+      }
+
+      '\n' => {
+        let start_pos = self.get_pos();
+        self.next_char();
+        let end_pos = self.get_pos();
+        if self.nesting == 0 {
+          self.at_begin_of_line = true;
+          self.emit((start_pos, Token::Newline, end_pos));
+        }
+      }
+
+      ' ' | '\t' | '\x0C' => {
+        // skip whitespace
+        self.next_char();
+        while self.char0 == Some(' ') || self.char0 == Some('\t') || self.char0 == Some('\x0C') {
+          self.next_char();
+        }
+      }
+
+      _ => {
+        let c = self.next_char();
+        return Err(LexicalError {
+          error: LexicalErrorType::UnrecognizedToken { token: c.unwrap() },
+          location: self.get_pos()
+        })
       }
     }
     Ok(())
@@ -785,5 +813,18 @@ where
 }
 
 
+#[cfg(test)]
+mod tests {
+  use super::{ make_tokenizer, NewlineHandler, Token};
+  use std::iter::FromIterator;
 
+  const WINDOW_EOL: &str = "\r\n";
+  const MAC_EOL: &str = "\r";
+  const UNIX_EOL: &str = "\n";
+
+  fn lex_source (source: &String) -> Vec<Token> {
+    let lexer = make_tokenizer(source);
+    Vec::from_iter(lexer.map(|x| x.unwrap().1))
+  }
+}
 

@@ -21,6 +21,7 @@ pub enum LexicalErrorType {
   PositionalArgumentError,
   DuplicateKeywordArgumentError,
   UnrecognizedToken { token: char },
+  NestingError,
   OtherError(String)
 }
 
@@ -34,6 +35,7 @@ impl fmt::Display for LexicalErrorType {
       LexicalErrorType::DuplicateKeywordArgumentError => write!(f, "keyword arguemnt repeated"),
       LexicalErrorType::UnrecognizedToken { token } => write!(f, "Got unexpected token {}", token),
       LexicalErrorType::OtherError(msg) => write!(f, "{}", msg),
+      LexicalErrorType::NestingError => write!(f, "Got unexpected parenthesis or bracket or brance"),
     }
   }
 }

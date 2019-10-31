@@ -101,6 +101,7 @@ impl fmt::Display for Token {
       Return => f.write_str("Return"),
       Break => f.write_str("Break"),
       Continue => f.write_str("Continue"),
+      Comment { value } => write!(f, "{}", value),
       Plus => f.write_str("+"),
       Minus => f.write_str("-"),
       Star => f.write_str("*"),
