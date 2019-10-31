@@ -8,7 +8,7 @@
 //! For example, one could do this:
 //!
 //! ```
-//! use zlang_parser::{parser, ast};
+//! use parser::{parser, ast};
 //!
 //! let zlang_source = "print('Hello world')";
 //! let zlang_ast = parser::parse_expression(zlang_source).unwrap();

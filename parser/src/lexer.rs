@@ -246,7 +246,8 @@ where
   fn consume_normal (&mut self) -> Result<(), LexicalError> {
     if let Some(c) = self.char0 {
       if self.is_identifier_start(c) {
-        self.lex_identifier();
+        let token = self.lex_identifier()?;
+        self.emit(token);
       } else {
         self.consume_character(c)?;
       }
@@ -270,6 +271,8 @@ where
       name.push(self.next_char().unwrap());
     }
     let end_pos = self.get_pos().clone();
+
+    println!("lex_identifier: {}", &name);
 
     if self.keywords.contains_key(&name) {
       Ok(( start_pos, self.keywords[&name].clone(), end_pos))
