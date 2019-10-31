@@ -608,31 +608,19 @@ where
       } // end of =
 
       '+' => {
-        let start_pos = self.get_pos();
-        self.next_char();
-        let end_pos = self.get_pos();
-        self.emit((start_pos, Token::Plus, end_pos));
+        self.eat_single_char(Token::Plus);
       }
 
       '-' => {
-        let start_pos = self.get_pos();
-        self.next_char();
-        let end_pos = self.get_pos();
-        self.emit((start_pos, Token::Minus, end_pos));
+        self.eat_single_char(Token::Minus);
       }
 
       '*' => {
-        let start_pos = self.get_pos();
-        self.next_char();
-        let end_pos = self.get_pos();
-        self.emit((start_pos, Token::Star, end_pos));
+        self.eat_single_char(Token::Star);
       }
 
       '%' => {
-        let start_pos = self.get_pos();
-        self.next_char();
-        let end_pos = self.get_pos();
-        self.emit((start_pos, Token::Percent, end_pos));
+        self.eat_single_char(Token::Percent);
       }
 
       '|' => {
