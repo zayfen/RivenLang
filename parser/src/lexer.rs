@@ -826,5 +826,23 @@ mod tests {
     let lexer = make_tokenizer(source);
     Vec::from_iter(lexer.map(|x| x.unwrap().1))
   }
+
+
+  #[test]
+  fn test_newline_processer () {
+    let src = "b\\\r\n";
+    assert_eq!(4, src.len());
+    let nlh = NewlineHandler::new(src.chars());
+    let chars: Vec<char> = nlh.collect();
+    assert_eq!(vec!['b', '\\', '\n'], chars);
+  }
+
+
+  #[test]
+  fn test_token_id () {
+    let src = "_235abc__def__dd_0";
+    let token = lex_source(&src.to_owned());
+    assert_eq!(vec![Token::Id { name: src.to_owned() }], token);
+  }
 }
 
