@@ -8,10 +8,12 @@
 //! For example, one could do this:
 //!
 //! ```
-//! use parser::{parser, ast};
+//! use parser::lexer::make_tokenizer;
+//! use std::iter::FromIterator;
 //!
-//! let zlang_source = "print('Hello world')";
-//! let zlang_ast = parser::parse_expression(zlang_source).unwrap();
+//! let zlang_source = "print('Hello world')".to_owned();
+//! let lxr = make_tokenizer(&zlang_source);
+//! let zlang_tokens = Vec::from_iter(lxr.map(|x| x.unwrap().1));
 //!
 //! ```
 

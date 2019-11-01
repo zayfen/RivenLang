@@ -830,7 +830,6 @@ mod tests {
     Vec::from_iter(lexer.map(|x| x.unwrap().1))
   }
 
-
   #[test]
   fn test_newline_processer () {
     let src = "b\\\r\n";
