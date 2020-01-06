@@ -30,5 +30,18 @@ struct SourceLocation {
 ```
 
 ### Programs
+```rust
+struct Program <: Node {
+  type: "Program",
+  body: Vec<Statement>
+}
+```
 
+### Functions
+```rust
+struct Function <: Node {
+  type: "Function",
+  
+}
+```
 
