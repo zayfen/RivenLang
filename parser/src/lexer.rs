@@ -255,7 +255,7 @@ where
     } else {
       // we reached end of file.
       let pos = self.get_pos();
-      
+
       self.emit((pos.clone(), Token::EndOfFile, pos.clone()));
     }
 
@@ -271,7 +271,7 @@ where
       name.push(self.next_char().unwrap());
     }
     let end_pos = self.get_pos().clone();
-
+    
     println!("lex_identifier: {}", &name);
 
     if self.keywords.contains_key(&name) {

@@ -180,13 +180,48 @@ struct Identifier <: Node, Expression {
 ```
 
 #### Literal
-
+```
+struct Literal {
+  type: "Literal",
+  value: String | Boolean | Number | None
+}
+```
 
 #### LogicalOperator
-
+```
+struct LogicalOperator {
+  type: "LogicalOperator",
+  value: "&&" | "||"
+}
+```
 
 #### Property
-
+```
+struct Property <: Node {
+  type: "Property",
+  key: String,
+  value: Expression,
+  kind: "init" | "get" | "set"
+}
+```
 
 #### UnaryOperator
+
+```
+struct UnaryOperator <: Node {
+	type: "UnaryOperator",
+	value: "+" | "-" | "!" | "~" | "typeof"
+}
+```
+
+
+
+#### BinaryOperator
+
+```
+struct BinaryOperator <: Node {
+	type: "BinaryOperator",
+	value: "+" | "-" | "*" | "/" | "%" | "&" | "|" | "^" | "==" | "!=" | ">" | ">=" | "<" | "<=" | "<<" | ">>"
+}
+```
 
