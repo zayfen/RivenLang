@@ -46,3 +46,20 @@ impl Location {
     self.column = 1;
   }
 }
+
+
+struct SourceLocation {
+  source: String,
+  start: Location,
+  end: Location
+}
+
+impl SourceLocation {
+  pub fn new (source: &str, start: Location, end: Location) -> Self {
+    SourceLocation {
+      source,
+      start,
+      end
+    }
+  }
+}
