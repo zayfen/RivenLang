@@ -47,15 +47,15 @@ impl Location {
   }
 }
 
-
-struct SourceLocation {
+#[derive(Clone, Debug, Default)]
+pub struct SourceLocation {
   source: String,
   start: Location,
   end: Location
 }
 
 impl SourceLocation {
-  pub fn new (source: &str, start: Location, end: Location) -> Self {
+  pub fn new (source: String, start: Location, end: Location) -> Self {
     SourceLocation {
       source,
       start,
