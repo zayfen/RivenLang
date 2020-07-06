@@ -1,15 +1,15 @@
 use crate::lexer::{ Lexer, NewlineHandler, LineContinationHandler };
 use crate::token::Token;
 use crate::ast::Program;
+use std::str::Chars;
 
-pub struct Parser<T: Iterator<Item = char>> {
-  lex: Lexer<T>,
+pub struct Parser<'a> {
+  lex: Lexer<LineContinationHandler<NewlineHandler<Chars<'a>>>>,
   lookahead: Token
 }
 
-impl<T> Parser<T>
-  where T: Iterator<Item = char> {
-  fn new (source: &str) -> Self {
+impl<'a> Parser<'a> {
+  fn new (source: &'a str) -> Self {
     let nlh = NewlineHandler::new(source.chars());
     let lch = LineContinationHandler::new(nlh);
     let lex = Lexer::new(lch);
@@ -20,6 +20,4 @@ impl<T> Parser<T>
     }
   }
 
-  pub fn parse () -> Program {
-  }
 }
