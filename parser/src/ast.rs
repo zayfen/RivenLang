@@ -1,4 +1,3 @@
-
 // virtual node for zlang
 use crate::location::SourceLocation;
 
@@ -25,54 +24,49 @@ pub enum Kind {
   LogicalOperator,
   Property,
   UnaryOperator,
-  BinaryOperator
+  BinaryOperator,
 }
 
 #[derive(Clone, Debug)]
 pub struct Node {
   kind: Kind,
-  loc: SourceLocation
+  loc: SourceLocation,
 }
-
 
 #[derive(Clone, Debug)]
 pub struct Program {
   kind: Kind,
-  body: Vec<Box<Statement>>
+  body: Vec<Box<Statement>>,
 }
 
 impl Program {
-  pub fn new () -> Self {
+  pub fn new() -> Self {
     Program {
       kind: Kind::Program,
-      body: vec![]
+      body: vec![],
     }
   }
 }
-
 
 #[derive(Clone, Debug)]
 pub struct Function {
   kind: Kind,
   id: Option<Identifier>,
   params: Vec<Property>,
-  body: BlockStatement
+  body: BlockStatement,
 }
-
 
 #[derive(Clone, Debug)]
 pub struct Identifier {
   kind: Kind,
-  name: String
+  name: String,
 }
-
 
 #[derive(Clone, Debug)]
 pub struct Property {
   kind: Kind,
-  id: Identifier
+  id: Identifier,
 }
-
 
 #[derive(Clone, Debug)]
 pub enum Statement {
@@ -82,20 +76,18 @@ pub enum Statement {
   IfStatement(IfStatement),
   ReturnStatement(ReturnStatement),
   WhileStatement(WhileStatement),
-  ForInStatement(ForInStatement)
+  ForInStatement(ForInStatement),
 }
-
 
 #[derive(Clone, Debug)]
 pub struct EmptyStatement {
   kind: Kind,
 }
 
-
 impl EmptyStatement {
-  fn new () -> Self {
+  fn new() -> Self {
     EmptyStatement {
-      kind: Kind::EmptyStatement
+      kind: Kind::EmptyStatement,
     }
   }
 }
@@ -103,14 +95,14 @@ impl EmptyStatement {
 #[derive(Clone, Debug)]
 pub struct BlockStatement {
   kind: Kind,
-  body: Option<Vec<Box<Statement>>>
+  body: Option<Vec<Box<Statement>>>,
 }
 
 impl BlockStatement {
-  fn new () -> Self {
+  fn new() -> Self {
     BlockStatement {
       kind: Kind::BlockStatement,
-      body: None
+      body: None,
     }
   }
 }
@@ -118,14 +110,14 @@ impl BlockStatement {
 #[derive(Clone, Debug)]
 pub struct ExpressionStatement {
   kind: Kind,
-  expression: Option<Expression>
+  expression: Option<Expression>,
 }
 
 impl ExpressionStatement {
-  fn new () -> Self {
+  fn new() -> Self {
     ExpressionStatement {
       kind: Kind::ExpressionStatement,
-      expression: None
+      expression: None,
     }
   }
 }
@@ -135,16 +127,16 @@ pub struct IfStatement {
   kind: Kind,
   test: Option<Box<Expression>>,
   consequent: Option<Box<Statement>>,
-  alternate: Option<Box<Statement>>
+  alternate: Option<Box<Statement>>,
 }
 
 impl IfStatement {
-  fn new () -> Self {
+  fn new() -> Self {
     IfStatement {
       kind: Kind::IfStatement,
       test: None,
       consequent: None,
-      alternate: None
+      alternate: None,
     }
   }
 }
@@ -152,14 +144,14 @@ impl IfStatement {
 #[derive(Clone, Debug)]
 pub struct ReturnStatement {
   kind: Kind,
-  argument: Option<Expression>
+  argument: Option<Expression>,
 }
 
 impl ReturnStatement {
-  fn new () -> Self {
+  fn new() -> Self {
     ReturnStatement {
       kind: Kind::ReturnStatement,
-      argument: None
+      argument: None,
     }
   }
 }
@@ -168,15 +160,15 @@ impl ReturnStatement {
 pub struct WhileStatement {
   kind: Kind,
   test: Option<Expression>,
-  body: Option<BlockStatement>
+  body: Option<BlockStatement>,
 }
 
 impl WhileStatement {
-  fn new () -> Self {
+  fn new() -> Self {
     WhileStatement {
       kind: Kind::WhileStatement,
       test: None,
-      body: None
+      body: None,
     }
   }
 }
@@ -187,17 +179,17 @@ pub struct ForInStatement {
   left: Option<Expression>,
   right: Option<Expression>,
   body: Option<BlockStatement>,
-  each: bool
+  each: bool,
 }
 
 impl ForInStatement {
-  fn new () -> Self {
+  fn new() -> Self {
     ForInStatement {
       kind: Kind::ForInStatement,
       left: None,
       right: None,
       body: None,
-      each: true
+      each: true,
     }
   }
 }
@@ -208,60 +200,58 @@ pub enum Expression {
   AssignmentExpression(Box<AssignmentExpression>),
   LogicalExpression(Box<LogicalExpression>),
   CallExpression(Box<CallExpression>),
-  BinaryExpression(Box<BinaryExpression>)
+  BinaryExpression(Box<BinaryExpression>),
 }
 
 #[derive(Clone, Debug)]
 pub struct ArrayExpression {
   kind: Kind,
-  elements: Option<Vec<Expression>>
+  elements: Option<Vec<Expression>>,
 }
 
 impl ArrayExpression {
-  fn new () -> Self {
+  fn new() -> Self {
     ArrayExpression {
       kind: Kind::ArrayExpression,
-      elements: None
+      elements: None,
     }
   }
 }
-
 
 #[derive(Clone, Debug)]
 pub struct AssignmentExpression {
   kind: Kind,
   operator: Option<AssignmentOperator>,
   left: Option<Expression>,
-  right: Option<Expression>
+  right: Option<Expression>,
 }
 
 impl AssignmentExpression {
-  fn new () -> Self {
+  fn new() -> Self {
     AssignmentExpression {
       kind: Kind::AssignmentExpression,
       operator: None,
       left: None,
-      right: None
+      right: None,
     }
   }
 }
-
 
 #[derive(Clone, Debug)]
 pub struct LogicalExpression {
   kind: Kind,
   operator: Option<LogicalOperator>,
   left: Option<Expression>,
-  right: Option<Expression>
+  right: Option<Expression>,
 }
 
 impl LogicalExpression {
-  fn new () -> Self {
+  fn new() -> Self {
     LogicalExpression {
       kind: Kind::LogicalExpression,
       operator: None,
       left: None,
-      right: None
+      right: None,
     }
   }
 }
@@ -270,15 +260,15 @@ impl LogicalExpression {
 pub struct CallExpression {
   kind: Kind,
   callee: Option<Box<Expression>>,
-  arguments: Option<Vec<Option<Box<Expression>>>>
+  arguments: Option<Vec<Option<Box<Expression>>>>,
 }
 
 impl CallExpression {
-  fn new () -> Self {
+  fn new() -> Self {
     CallExpression {
       kind: Kind::CallExpression,
       callee: None,
-      arguments: None
+      arguments: None,
     }
   }
 }
@@ -288,16 +278,16 @@ pub struct BinaryExpression {
   kind: Kind,
   operator: Option<BinaryOperator>,
   left: Option<Expression>,
-  right: Option<Expression>
+  right: Option<Expression>,
 }
 
 impl BinaryExpression {
-  fn new () -> Self {
+  fn new() -> Self {
     BinaryExpression {
       kind: Kind::BinaryExpression,
       operator: None,
       left: None,
-      right: None
+      right: None,
     }
   }
 }
@@ -314,20 +304,20 @@ pub enum EnumAssignmentOperators {
   RShiftAssign,
   OrAssisn,
   XorAssign,
-  AndAssign
+  AndAssign,
 }
 
 #[derive(Clone, Debug)]
 pub struct AssignmentOperator {
   kind: Kind,
-  value: EnumAssignmentOperators
+  value: EnumAssignmentOperators,
 }
 
 impl AssignmentOperator {
-  fn new (operator: EnumAssignmentOperators) -> Self {
+  fn new(operator: EnumAssignmentOperators) -> Self {
     AssignmentOperator {
       kind: Kind::AssignmentOperator,
-      value: operator
+      value: operator,
     }
   }
 }
@@ -335,65 +325,64 @@ impl AssignmentOperator {
 #[derive(Clone, Debug)]
 enum EnumLogicalOperators {
   LogicalAnd,
-  LogicalOr
+  LogicalOr,
 }
 
 #[derive(Clone, Debug)]
 pub struct LogicalOperator {
   kind: Kind,
-  value: EnumLogicalOperators
+  value: EnumLogicalOperators,
 }
 
 impl LogicalOperator {
-  fn new (operator: EnumLogicalOperators) -> Self {
+  fn new(operator: EnumLogicalOperators) -> Self {
     LogicalOperator {
       kind: Kind::LogicalOperator,
-      value: operator
+      value: operator,
     }
   }
 }
-
 
 #[derive(Clone, Debug)]
 enum EnumLiteral {
   String(String),
   Boolean(bool),
   Number(f64),
-  None
+  None,
 }
 
 #[derive(Clone, Debug)]
 pub struct Literal {
   kind: Kind,
-  value: EnumLiteral
+  value: EnumLiteral,
 }
 
 impl Literal {
-  fn string (s: String) -> Self {
+  fn string(s: String) -> Self {
     Literal {
       kind: Kind::Literal,
-      value: EnumLiteral::String(s)
+      value: EnumLiteral::String(s),
     }
   }
 
-  fn boolean (b: bool) -> Self {
+  fn boolean(b: bool) -> Self {
     Literal {
       kind: Kind::Literal,
-      value: EnumLiteral::Boolean(b)
+      value: EnumLiteral::Boolean(b),
     }
   }
 
-  fn number (n: f64) -> Self {
+  fn number(n: f64) -> Self {
     Literal {
       kind: Kind::Literal,
-      value: EnumLiteral::Number(n)
+      value: EnumLiteral::Number(n),
     }
   }
 
-  fn none () -> Self {
+  fn none() -> Self {
     Literal {
       kind: Kind::Literal,
-      value: EnumLiteral::None
+      value: EnumLiteral::None,
     }
   }
 }
@@ -403,20 +392,20 @@ impl Literal {
 enum EnumUnaryOperators {
   Not,
   Xor,
-  Typeof
+  Typeof,
 }
 
 #[derive(Clone, Debug)]
 pub struct UnaryOperator {
   kind: Kind,
-  value: EnumUnaryOperators
+  value: EnumUnaryOperators,
 }
 
 impl UnaryOperator {
-  fn new (operator: EnumUnaryOperators) -> Self {
+  fn new(operator: EnumUnaryOperators) -> Self {
     UnaryOperator {
       kind: Kind::UnaryOperator,
-      value: operator
+      value: operator,
     }
   }
 }
@@ -439,15 +428,11 @@ enum EnumBinaryOperators {
   Less,
   LessEqual,
   BitwiseLShift,
-  BitwiseRShift
+  BitwiseRShift,
 }
 
 #[derive(Clone, Debug)]
 struct BinaryOperator {
   kind: Kind,
-  value: EnumBinaryOperators
+  value: EnumBinaryOperators,
 }
-
-
-
-

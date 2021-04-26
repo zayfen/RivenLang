@@ -18,12 +18,13 @@
 //! ```
 
 #[macro_use]
-
 extern crate log;
 
-pub mod token;
-pub mod location;
+pub mod ast;
 pub mod error;
 pub mod lexer;
-pub mod ast;
+pub mod location;
 pub mod parser;
+pub mod token;
+
+pub mod parse_term;
