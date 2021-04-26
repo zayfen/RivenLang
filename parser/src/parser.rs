@@ -23,7 +23,7 @@ impl<'a> Parser<'a> {
 
   pub fn next_token (&mut self) -> Token {
     let result: Option<LexResult> = self.lex.next();
-    let result = result.map(|lexResult| lexResult).unwrap();
+    let result = result.map(|lr| lr).unwrap();
     match result {
       Ok(v) => v.1,
       Err(_) => Token::None
