@@ -358,28 +358,28 @@ pub struct Literal {
 }
 
 impl Literal {
-  fn string(s: String) -> Self {
+  pub fn string(s: String) -> Self {
     Literal {
       kind: Kind::Literal,
       value: EnumLiteral::String(s),
     }
   }
 
-  fn boolean(b: bool) -> Self {
+  pub fn boolean(b: bool) -> Self {
     Literal {
       kind: Kind::Literal,
       value: EnumLiteral::Boolean(b),
     }
   }
 
-  fn number(n: f64) -> Self {
+  pub fn number(n: f64) -> Self {
     Literal {
       kind: Kind::Literal,
       value: EnumLiteral::Number(n),
     }
   }
 
-  fn none() -> Self {
+  pub fn none() -> Self {
     Literal {
       kind: Kind::Literal,
       value: EnumLiteral::None,
