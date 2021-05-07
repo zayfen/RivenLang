@@ -1,5 +1,4 @@
-use crate::ast::Program;
-use crate::lexer::{Lexer, LexResult, LineContinationHandler, NewlineHandler};
+use crate::lexer::{LexResult, Lexer, LineContinationHandler, NewlineHandler};
 use crate::token::Token;
 use std::str::Chars;
 
@@ -21,16 +20,23 @@ impl<'a> Parser<'a> {
     }
   }
 
-  fn next_token (&mut self) -> Token {
+  fn next_token(&mut self) -> Token {
+    println!("next_token >>>>>>>>>>>>>>>>>>");
     let result: Option<LexResult> = self.lex.next();
+    println!("Option<LexResult>: {:?}", result);
+    println!("next_token <<<<<<<<<<<<<<<<<");
+
+    if !result.is_some() {
+      return Token::None;
+    }
     let result = result.map(|lr| lr).unwrap();
     match result {
       Ok(v) => v.1,
-      Err(_) => Token::None
+      Err(_) => Token::None,
     }
   }
 
-  pub fn next (&mut self) -> Token {
+  pub fn next(&mut self) -> Token {
     let token = self.next_token();
     let next_token = self.next_token();
     self.lookahead = next_token;

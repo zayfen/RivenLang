@@ -807,7 +807,7 @@ where
 
 #[cfg(test)]
 mod tests {
-  use super::{make_tokenizer, NewlineHandler, Token};
+  use super::{make_tokenizer, BigInt, NewlineHandler, NumberType, Token};
   use std::iter::FromIterator;
 
   const WINDOW_EOL: &str = "\r\n";
@@ -835,6 +835,20 @@ mod tests {
     assert_eq!(
       vec![Token::Id {
         name: src.to_owned()
+      }],
+      token
+    );
+  }
+
+  #[test]
+  fn test_token_number() {
+    let src = "100";
+    let token = lex_source(&src.to_owned());
+    assert_eq!(
+      vec![Token::Number {
+        number_type: NumberType::Int,
+        int: BigInt::from(100),
+        float: 0f64
       }],
       token
     );
