@@ -4,7 +4,7 @@ use crate::parser::Parser;
 use crate::ast::Literal;
 use crate::token::{Token, NumberType};
 
-pub(crate) fn parse_term(parser: &mut Parser) -> Result<Literal, String> {
+pub fn parse_term(parser: &mut Parser) -> Result<Literal, String> {
   let token = parser.next();
   match token {
     Token::Number {number_type, int, float} => {
