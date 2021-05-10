@@ -42,4 +42,8 @@ impl<'a> Parser<'a> {
     self.lookahead = next_token;
     token
   }
+
+  pub fn peek(&mut self) -> Token {}
+
+  pub fn consume(&mut self) -> Token {}
 }
