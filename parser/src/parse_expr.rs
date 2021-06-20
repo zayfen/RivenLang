@@ -4,7 +4,7 @@ use crate::parser::Parser;
 use crate::token::Token;
 
 pub fn parse_expr (parser: &mut Parser) -> Result<Expression, String> {
-  let token = parser.next();
+  let token = parser.next_token()();
   match token {
     Token::Id { name } => {
       if parser.lookahead == Token::Equal {

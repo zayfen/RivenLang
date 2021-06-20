@@ -5,7 +5,6 @@ use std::str::Chars;
 #[derive(Debug)]
 pub struct Parser<'a> {
   lex: Lexer<LineContinationHandler<NewlineHandler<Chars<'a>>>>,
-  lookahead: Token,
 }
 
 impl<'a> Parser<'a> {
@@ -15,12 +14,11 @@ impl<'a> Parser<'a> {
     let lex = Lexer::new(lch);
 
     Parser {
-      lex: lex,
-      lookahead: Token::None,
+      lex: lex
     }
   }
 
-  fn next_token(&mut self) -> Token {
+  pub fn next_token(&mut self) -> Token {
     println!("next_token >>>>>>>>>>>>>>>>>>");
     let result: Option<LexResult> = self.lex.next();
     println!("Option<LexResult>: {:?}", result);
@@ -36,14 +34,10 @@ impl<'a> Parser<'a> {
     }
   }
 
-  pub fn next(&mut self) -> Token {
+  // lookforward 2 tokens
+  pub fn lookahead2(&mut self) -> (Token, Token) {
     let token = self.next_token();
     let next_token = self.next_token();
-    self.lookahead = next_token;
-    token
+    (token, next_token)
   }
-
-  pub fn peek(&mut self) -> Token {}
-
-  pub fn consume(&mut self) -> Token {}
 }

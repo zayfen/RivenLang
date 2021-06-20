@@ -5,7 +5,7 @@ use crate::parser::Parser;
 use crate::token::{NumberType, Token};
 
 pub fn parse_term(parser: &mut Parser) -> Result<Literal, String> {
-  let token = parser.next();
+  let token = parser.next_token();
   match token {
     Token::Number {
       number_type,
