@@ -30,6 +30,7 @@ pub fn get_keywords() -> HashMap<String, Token> {
   let mut keywords: HashMap<String, Token> = HashMap::new();
 
   // keywords
+  keywords.insert(String::from("let"), Token::Let);
   keywords.insert(String::from("for"), Token::For);
   keywords.insert(String::from("in"), Token::In);
   keywords.insert(String::from("while"), Token::While);
