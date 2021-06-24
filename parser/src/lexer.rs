@@ -467,7 +467,6 @@ where
     let quote_char = self.next_char().unwrap();
     let mut value_text = String::new();
     let start_pos = self.get_pos();
-
     loop {
       match self.next_char() {
         Some('\\') => {
@@ -521,6 +520,8 @@ where
                 error: LexicalErrorType::StringError,
                 location: self.get_pos(),
               });
+            } else {
+              value_text.push(c);
             }
           }
         }
