@@ -13,9 +13,7 @@ impl<'a> Parser<'a> {
     let lch = LineContinationHandler::new(nlh);
     let lex = Lexer::new(lch);
 
-    Parser {
-      lex: lex
-    }
+    Parser { lex: lex }
   }
 
   pub fn next_token(&mut self) -> Token {

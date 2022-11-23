@@ -4,8 +4,8 @@ use parser::parser::Parser;
 
 #[test]
 fn test_parse_term() {
-  let mut p = Parser::new("200");
-  let number = parse_term(&mut p);
-  dbg!(number);
-  assert_eq!(2 + 2, 4);
+    let mut p = Parser::new("200");
+    let number = parse_term(&mut p);
+    dbg!(number);
+    assert_eq!(2 + 2, 4);
 }

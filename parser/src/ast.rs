@@ -436,3 +436,12 @@ struct BinaryOperator {
   kind: Kind,
   value: EnumBinaryOperators,
 }
+
+impl BinaryOperator {
+  pub fn new(self, kind: Kind, value: EnumAssignmentOperators) -> Self {
+    BinaryOperator {
+      kind: Kind::BinaryOperator,
+      value: EnumBinaryOperators::Add,
+    }
+  }
+}
