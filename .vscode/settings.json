@@ -1,11 +1,12 @@
 {
-  "editor.fontSize": 18,
+  "editor.fontSize": 16,
   "editor.tabSize": 2,
-  "editor.fontFamily": "'Source Code Pro semibold',Consolas, 'Courier New', monospace",
+  "editor.fontFamily": "'Souce Code Pro',Consolas, 'Courier New', monospace",
   "debug.console.fontSize": 18,
   "scm.inputFontSize": 16,
   "extensions.webWorker": true,
   "workbench.preferredLightColorTheme": "Dracula",
   "workbench.preferredDarkColorTheme": "Dracula",
-  "workbench.iconTheme": "material-icon-theme"
+  "workbench.iconTheme": "material-icon-theme",
+  "editor.lineHeight": 1.5
 }

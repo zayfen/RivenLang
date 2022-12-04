@@ -22,9 +22,10 @@ impl<'a> Parser<'a> {
     println!("Option<LexResult>: {:?}", result);
     println!("next_token <<<<<<<<<<<<<<<<<");
 
-    if !result.is_some() {
+    if result.is_none() {
       return Token::None;
     }
+
     let result = result.map(|lr| lr).unwrap();
     match result {
       Ok(v) => v.1,
