@@ -25,6 +25,7 @@ pub enum Kind {
   Property,
   UnaryOperator,
   BinaryOperator,
+  Primary,
 }
 
 #[derive(Clone, Debug)]
@@ -58,8 +59,8 @@ pub struct Function {
 
 #[derive(Clone, Debug)]
 pub struct Identifier {
-  kind: Kind,
-  name: String,
+  pub kind: Kind,
+  pub name: String,
 }
 
 #[derive(Clone, Debug)]
@@ -388,6 +389,26 @@ impl Literal {
 }
 
 // Primary
+#[derive(Clone, Debug)]
+pub(crate) enum PrimaryValue {
+  Constant(Literal),
+  Variable(Identifier),
+}
+
+#[derive(Clone, Debug)]
+pub struct Primary {
+  kind: Kind,
+  value: PrimaryValue,
+}
+
+impl Primary {
+  pub(crate) fn new(value: PrimaryValue) -> Self {
+    Primary {
+      kind: Kind::Primary,
+      value,
+    }
+  }
+}
 
 // 一元运算符
 #[derive(Clone, Debug)]
