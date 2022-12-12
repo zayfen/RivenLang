@@ -520,6 +520,8 @@ where
                 error: LexicalErrorType::StringError,
                 location: self.get_pos(),
               });
+            } else {
+              value_text.push(c);
             }
           }
         }

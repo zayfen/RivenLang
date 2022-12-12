@@ -1,8 +1,10 @@
-// virtual node for zlang
+/*
+ * virtual node for zlang
+*/
 use crate::location::SourceLocation;
 
 // 所有的Node枚举
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Kind {
   Program,
   Function,
@@ -344,8 +346,8 @@ impl LogicalOperator {
   }
 }
 
-#[derive(Clone, Debug)]
-enum EnumLiteral {
+#[derive(Clone, Debug, PartialEq)]
+pub enum EnumLiteral {
   String(String),
   Boolean(bool),
   Number(f64),
@@ -354,8 +356,8 @@ enum EnumLiteral {
 
 #[derive(Clone, Debug)]
 pub struct Literal {
-  kind: Kind,
-  value: EnumLiteral,
+  pub(crate) kind: Kind,
+  pub(crate) value: EnumLiteral,
 }
 
 impl Literal {
@@ -397,8 +399,8 @@ pub(crate) enum PrimaryValue {
 
 #[derive(Clone, Debug)]
 pub struct Primary {
-  kind: Kind,
-  value: PrimaryValue,
+  pub(crate) kind: Kind,
+  pub(crate) value: PrimaryValue,
 }
 
 impl Primary {

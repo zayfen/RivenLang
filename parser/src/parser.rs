@@ -13,7 +13,7 @@ impl<'a> Parser<'a> {
     let lch = LineContinationHandler::new(nlh);
     let lex = Lexer::new(lch);
 
-    Parser { lex: lex }
+    Parser { lex }
   }
 
   pub fn next_token(&mut self) -> Token {
@@ -25,7 +25,6 @@ impl<'a> Parser<'a> {
     if result.is_none() {
       return Token::None;
     }
-
     let result = result.map(|lr| lr).unwrap();
     match result {
       Ok(v) => v.1,

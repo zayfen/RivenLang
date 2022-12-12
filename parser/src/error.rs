@@ -3,8 +3,6 @@ use lalrpop_util::ParseError as LalrpopError;
 use crate::location::Location;
 use crate::token::Token;
 
-use std::error::Error;
-
 use std::fmt;
 
 /// Represents an error during lexical scanning
