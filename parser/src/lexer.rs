@@ -5,7 +5,7 @@ use num_bigint::BigInt;
 use num_traits::identities::Zero;
 use num_traits::Num;
 use std::char;
-use std::cmp::Ordering;
+
 use std::collections::HashMap;
 use std::str::FromStr;
 use unicode_xid::UnicodeXID;
@@ -247,7 +247,7 @@ where
       // we reached end of file.
       let pos = self.get_pos();
 
-      self.emit((pos.clone(), Token::EndOfFile, pos.clone()));
+      self.emit((pos.clone(), Token::EndOfFile, pos));
     }
 
     Ok(())
@@ -257,18 +257,18 @@ where
 
   fn lex_identifier(&mut self) -> LexResult {
     let mut name = String::new();
-    let start_pos = self.get_pos().clone();
+    let start_pos = self.get_pos();
     while self.is_identifier_continuation() {
       name.push(self.next_char().unwrap());
     }
-    let end_pos = self.get_pos().clone();
+    let end_pos = self.get_pos();
 
     println!("lex_identifier: {}", &name);
 
     if self.keywords.contains_key(&name) {
       Ok((start_pos, self.keywords[&name].clone(), end_pos))
     } else {
-      Ok((start_pos, Token::Id { name: name }, end_pos))
+      Ok((start_pos, Token::Id { name }, end_pos))
     }
   }
 
@@ -514,15 +514,13 @@ where
         Some(c) => {
           if c == quote_char {
             break;
+          } else if c == '\n' {
+            return Err(LexicalError {
+              error: LexicalErrorType::StringError,
+              location: self.get_pos(),
+            });
           } else {
-            if c == '\n' {
-              return Err(LexicalError {
-                error: LexicalErrorType::StringError,
-                location: self.get_pos(),
-              });
-            } else {
-              value_text.push(c);
-            }
+            value_text.push(c);
           }
         }
 

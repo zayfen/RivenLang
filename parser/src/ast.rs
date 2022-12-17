@@ -30,16 +30,16 @@ pub enum Kind {
   Primary,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Node {
   kind: Kind,
   loc: SourceLocation,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Program {
   kind: Kind,
-  body: Vec<Box<Statement>>,
+  body: Vec<Statement>,
 }
 
 impl Program {
@@ -51,7 +51,7 @@ impl Program {
   }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Function {
   kind: Kind,
   id: Option<Identifier>,
@@ -59,19 +59,19 @@ pub struct Function {
   body: BlockStatement,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Identifier {
   pub kind: Kind,
   pub name: String,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Property {
   kind: Kind,
   id: Identifier,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Statement {
   EmptyStatement(EmptyStatement),
   BlockStatment(BlockStatement),
@@ -82,7 +82,7 @@ pub enum Statement {
   ForInStatement(ForInStatement),
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct EmptyStatement {
   kind: Kind,
 }
@@ -95,10 +95,10 @@ impl EmptyStatement {
   }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct BlockStatement {
   kind: Kind,
-  body: Option<Vec<Box<Statement>>>,
+  body: Option<Vec<Statement>>,
 }
 
 impl BlockStatement {
@@ -110,7 +110,7 @@ impl BlockStatement {
   }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct ExpressionStatement {
   kind: Kind,
   expression: Option<Expression>,
@@ -125,7 +125,7 @@ impl ExpressionStatement {
   }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct IfStatement {
   kind: Kind,
   test: Option<Box<Expression>>,
@@ -144,7 +144,7 @@ impl IfStatement {
   }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct ReturnStatement {
   kind: Kind,
   argument: Option<Expression>,
@@ -159,7 +159,7 @@ impl ReturnStatement {
   }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct WhileStatement {
   kind: Kind,
   test: Option<Expression>,
@@ -176,7 +176,7 @@ impl WhileStatement {
   }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct ForInStatement {
   kind: Kind,
   left: Option<Expression>,
@@ -197,7 +197,7 @@ impl ForInStatement {
   }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Expression {
   ArrayExpression(Box<ArrayExpression>),
   AssignmentExpression(Box<AssignmentExpression>),
@@ -206,7 +206,7 @@ pub enum Expression {
   BinaryExpression(Box<BinaryExpression>),
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct ArrayExpression {
   kind: Kind,
   elements: Option<Vec<Expression>>,
@@ -221,7 +221,7 @@ impl ArrayExpression {
   }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct AssignmentExpression {
   kind: Kind,
   operator: Option<AssignmentOperator>,
@@ -240,7 +240,7 @@ impl AssignmentExpression {
   }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct LogicalExpression {
   kind: Kind,
   operator: Option<LogicalOperator>,
@@ -259,7 +259,7 @@ impl LogicalExpression {
   }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct CallExpression {
   kind: Kind,
   callee: Option<Box<Expression>>,
@@ -276,7 +276,7 @@ impl CallExpression {
   }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct BinaryExpression {
   kind: Kind,
   operator: Option<BinaryOperator>,
@@ -295,7 +295,7 @@ impl BinaryExpression {
   }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum EnumAssignmentOperators {
   Assign,
   PlusAssign,
@@ -310,7 +310,7 @@ pub enum EnumAssignmentOperators {
   AndAssign,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct AssignmentOperator {
   kind: Kind,
   value: EnumAssignmentOperators,
@@ -325,13 +325,13 @@ impl AssignmentOperator {
   }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 enum EnumLogicalOperators {
   LogicalAnd,
   LogicalOr,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct LogicalOperator {
   kind: Kind,
   value: EnumLogicalOperators,
@@ -354,7 +354,7 @@ pub enum EnumLiteral {
   None,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Literal {
   pub(crate) kind: Kind,
   pub(crate) value: EnumLiteral,
@@ -391,13 +391,13 @@ impl Literal {
 }
 
 // Primary
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub(crate) enum PrimaryValue {
   Constant(Literal),
   Variable(Identifier),
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Primary {
   pub(crate) kind: Kind,
   pub(crate) value: PrimaryValue,
@@ -413,14 +413,14 @@ impl Primary {
 }
 
 // 一元运算符
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 enum EnumUnaryOperators {
   Not,
   Xor,
   Typeof,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct UnaryOperator {
   kind: Kind,
   value: EnumUnaryOperators,
@@ -436,7 +436,7 @@ impl UnaryOperator {
 }
 
 // 二元运算符
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 enum EnumBinaryOperators {
   Add,
   Minus,
@@ -456,14 +456,14 @@ enum EnumBinaryOperators {
   BitwiseRShift,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 struct BinaryOperator {
   kind: Kind,
   value: EnumBinaryOperators,
 }
 
 impl BinaryOperator {
-  pub fn new(self, kind: Kind, value: EnumAssignmentOperators) -> Self {
+  pub fn new(self, _kind: Kind, _value: EnumAssignmentOperators) -> Self {
     BinaryOperator {
       kind: Kind::BinaryOperator,
       value: EnumBinaryOperators::Add,

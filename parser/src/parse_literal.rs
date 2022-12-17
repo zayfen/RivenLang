@@ -4,7 +4,7 @@ use crate::ast::Literal;
 use crate::parser::Parser;
 use crate::token::{NumberType, Token};
 
-pub fn parse_literal(parser: &mut Parser, token: Token) -> Result<Literal, String> {
+pub fn parse_literal(_parser: &mut Parser, token: Token) -> Result<Literal, String> {
   match token {
     Token::Number {
       number_type,

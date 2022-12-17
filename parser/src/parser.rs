@@ -25,7 +25,7 @@ impl<'a> Parser<'a> {
     if result.is_none() {
       return Token::None;
     }
-    let result = result.map(|lr| lr).unwrap();
+    let result = result.unwrap();
     match result {
       Ok(v) => v.1,
       Err(_) => Token::None,

@@ -6,13 +6,13 @@ use crate::token::Token;
 use std::fmt;
 
 /// Represents an error during lexical scanning
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct LexicalError {
   pub error: LexicalErrorType,
   pub location: Location,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum LexicalErrorType {
   StringError,
   UnicodeError,
