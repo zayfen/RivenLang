@@ -60,10 +60,7 @@ pub struct Function {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct Identifier {
-  pub kind: Kind,
-  pub name: String,
-}
+pub struct Identifier(pub String);
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Property {
@@ -392,23 +389,17 @@ impl Literal {
 
 // Primary
 #[derive(Clone, Debug, PartialEq)]
-pub(crate) enum PrimaryValue {
+pub enum PrimaryValue {
   Constant(Literal),
   Variable(Identifier),
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct Primary {
-  pub(crate) kind: Kind,
-  pub(crate) value: PrimaryValue,
-}
+pub struct Primary(PrimaryValue);
 
 impl Primary {
-  pub(crate) fn new(value: PrimaryValue) -> Self {
-    Primary {
-      kind: Kind::Primary,
-      value,
-    }
+  pub fn new(value: PrimaryValue) -> Self {
+    Primary(value)
   }
 }
 
