@@ -16,6 +16,7 @@ impl<'a> Parser<'a> {
     Parser { lex }
   }
 
+  // get next token and advances the current token
   pub fn next_token(&mut self) -> Token {
     println!("next_token >>>>>>>>>>>>>>>>>>");
     let result: Option<LexResult> = self.lex.next();
@@ -32,10 +33,27 @@ impl<'a> Parser<'a> {
     }
   }
 
+  pub fn peek_token(&mut self) -> Option<Token> {
+    // TODO: get next token but don't advances
+    None
+  }
+
   // lookforward 2 tokens
   pub fn lookahead2(&mut self) -> (Token, Token) {
     let token = self.next_token();
     let next_token = self.next_token();
     (token, next_token)
+  }
+
+  // return true if next token matches.
+  pub fn check_peek(&mut self, token: Token) -> bool {
+    // TODO: to check next token match or not (not advanced)
+    true
+  }
+
+  // return true if current token matches.
+  pub fn check_token(&mut self, token: Token) -> bool {
+    // TODO: to check current token whether it matches
+    true
   }
 }
