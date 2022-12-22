@@ -1,6 +1,8 @@
 # zlang
 a language implemented in rust
 
+Learning resource: [TeenytinyCompiler](https://austinhenley.com/blog/teenytinycompiler2.html)
+
 ## grammar
 
 ### Node Objects
