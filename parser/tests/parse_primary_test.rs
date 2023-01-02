@@ -7,7 +7,7 @@ use parser::{
 #[test]
 fn test_parse_primary_string() {
   let mut parser = Parser::new("'123'");
-  let token = parser.next_token();
+  let token = parser.get_token();
   let primary_node_result = parse_primary(&mut parser, token);
   let primary_node: Primary = primary_node_result.unwrap();
 
@@ -20,7 +20,7 @@ fn test_parse_primary_string() {
 #[test]
 fn test_parse_primary_number() {
   let mut parser = Parser::new("123");
-  let token = parser.next_token();
+  let token = parser.get_token();
   let primary_node_result = parse_primary(&mut parser, token);
   let primary_node = primary_node_result.unwrap();
 
@@ -33,7 +33,7 @@ fn test_parse_primary_number() {
 #[test]
 fn test_parse_primary_id() {
   let mut parser = Parser::new("name");
-  let token = parser.next_token();
+  let token = parser.get_token();
   let primary_node_result = parse_primary(&mut parser, token);
   let primary_node = primary_node_result.unwrap();
 

@@ -145,3 +145,91 @@ impl fmt::Display for Token {
     }
   }
 }
+
+pub fn get_token_kind(token: Token) -> String {
+  use Token::*;
+
+  match token {
+    Id { name } => "Id".to_owned(),
+    Number {
+      int,
+      float,
+      number_type,
+    } => "Number".to_owned(),
+    String { value } => "String".to_owned(),
+    Bool { value } => "Bool".to_owned(),
+    Byte { value } => "Byte".to_owned(),
+    Newline => "Newline".to_owned(),
+    EndOfFile => "EndOfFile".to_owned(),
+    For => "For".to_owned(),
+    In => "In".to_owned(),
+    While => "While".to_owned(),
+    If => "If".to_owned(),
+    ElIf => "ElIf".to_owned(),
+    Else => "Else".to_owned(),
+    Struct => "Struct".to_owned(),
+    None => "None".to_owned(),
+    Return => "Return".to_owned(),
+    Break => "Break".to_owned(),
+    Continue => "Continue".to_owned(),
+    Comment { value } => "Comment".to_owned(),
+    Plus => "Plus".to_owned(),
+    Minus => "Minus".to_owned(),
+    Star => "Star".to_owned(),
+    Slash => "Slash".to_owned(),
+    Percent => "Percent".to_owned(),
+    Vbar => "Vbar".to_owned(),
+    Amper => "Amper".to_owned(),
+    Tilde => "Tilde".to_owned(),
+    Power => "Power".to_owned(),
+    LeftShift => "LeftShift".to_owned(),
+    RightShift => "RightShift".to_owned(),
+    DoubleAmper => "DoubleAmper".to_owned(),
+    DoubleVbar => "DoubleVbar".to_owned(),
+    Exclamation => "Exclamation".to_owned(),
+    Greater => "Greater".to_owned(),
+    Less => "Less".to_owned(),
+    Equal => "Equal".to_owned(),
+    DoubleEqual => "DoubleEqual".to_owned(),
+    LPar => "LPar".to_owned(),
+    RPar => "RPar".to_owned(),
+    LBracket => "LBracket".to_owned(),
+    RBracket => "RBracket".to_owned(),
+    LBrace => "LBrace".to_owned(),
+    RBrace => "RBrace".to_owned(),
+    Dot => "Dot".to_owned(),
+    Semicolon => "Semicolon".to_owned(),
+    Comma => "Comma".to_owned(),
+  }
+}
+
+pub fn is_same_token_kind(token: Token, other: Token) -> bool {
+  get_token_kind(token) == get_token_kind(other)
+}
+
+#[cfg(test)]
+mod tests {
+  use super::{get_token_kind, is_same_token_kind, Token};
+
+  #[test]
+  fn test_token_eq() {
+    assert_eq!(
+      "Id",
+      get_token_kind(Token::Id {
+        name: "zhansan".to_owned()
+      })
+    );
+
+    assert_eq!(
+      true,
+      is_same_token_kind(
+        Token::Id {
+          name: "zhansan".to_owned()
+        },
+        Token::Id {
+          name: "Lisi".to_owned()
+        }
+      )
+    );
+  }
+}
