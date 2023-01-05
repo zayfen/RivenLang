@@ -403,6 +403,19 @@ impl Primary {
   }
 }
 
+#[derive(Clone, Debug, PartialEq)]
+pub struct Term(Primary, Option<EnumBinaryOperators>, Option<Box<Term>>);
+
+impl Term {
+  pub fn new(
+    left: Primary,
+    operator: Option<EnumBinaryOperators>,
+    right: Option<Box<Term>>,
+  ) -> Self {
+    Term(left, operator, right)
+  }
+}
+
 // 一元运算符
 #[derive(Clone, Debug, PartialEq)]
 enum EnumUnaryOperators {
@@ -428,7 +441,7 @@ impl UnaryOperator {
 
 // 二元运算符
 #[derive(Clone, Debug, PartialEq)]
-enum EnumBinaryOperators {
+pub enum EnumBinaryOperators {
   Add,
   Minus,
   Time,
@@ -454,10 +467,10 @@ struct BinaryOperator {
 }
 
 impl BinaryOperator {
-  pub fn new(self, _kind: Kind, _value: EnumAssignmentOperators) -> Self {
+  pub fn new(self, _kind: Kind, _value: EnumBinaryOperators) -> Self {
     BinaryOperator {
-      kind: Kind::BinaryOperator,
-      value: EnumBinaryOperators::Add,
+      kind: _kind,
+      value: _value,
     }
   }
 }

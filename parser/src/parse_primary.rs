@@ -1,9 +1,10 @@
-pub(crate) use crate::ast::{Identifier, Kind, Primary, PrimaryValue};
+use crate::ast::{Identifier, Primary, PrimaryValue};
 use crate::parse_literal::parse_literal;
 use crate::parser::Parser;
 use crate::token::Token;
 
-pub fn parse_primary(parser: &mut Parser, token: Token) -> Result<Primary, String> {
+pub fn parse_primary(parser: &mut Parser) -> Result<Primary, String> {
+  let token = parser.get_token();
   let ref_token = &token;
 
   let primary_value = match ref_token {
@@ -20,6 +21,10 @@ pub fn parse_primary(parser: &mut Parser, token: Token) -> Result<Primary, Strin
     )),
     _ => Err("Unexcepted token when parse_primary".to_owned()),
   };
+
+  if primary_value.is_err() {
+    panic!("unexcepted token when parse_primary");
+  }
 
   Ok(Primary::new(primary_value.unwrap()))
 }

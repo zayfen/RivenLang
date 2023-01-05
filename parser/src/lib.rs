@@ -29,3 +29,4 @@ pub mod token;
 
 pub mod parse_literal;
 pub mod parse_primary;
+pub mod parse_term;

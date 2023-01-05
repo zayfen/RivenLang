@@ -141,9 +141,9 @@
                              | - <term>
 
 <term>                     ::= <primary>
-                             | <term> * <primary>
-                             | <term> / <primary>
-                             | <term> MOD <primary>
+                             | <primary> * <term>
+                             | <primary> / <term>
+                             | <primary> MOD <term>
 
 <primary>         ::= <constant>
                     | <variable>
