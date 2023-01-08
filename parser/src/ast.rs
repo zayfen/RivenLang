@@ -404,7 +404,11 @@ impl Primary {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct Term(Primary, Option<EnumBinaryOperators>, Option<Box<Term>>);
+pub struct Term(
+  pub Primary,
+  pub Option<EnumBinaryOperators>,
+  pub Option<Box<Term>>,
+);
 
 impl Term {
   pub fn new(

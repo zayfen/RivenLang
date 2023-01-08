@@ -8,17 +8,16 @@ pub fn parse_primary(parser: &mut Parser) -> Result<Primary, String> {
   let ref_token = &token;
 
   let primary_value = match ref_token {
-    Token::Id { name } => Ok(PrimaryValue::Variable(Identifier(name.to_owned()))),
+    Token::Id { name } => {
+      parser.next_token();
+      Ok(PrimaryValue::Variable(Identifier(name.to_owned())))
+    }
     Token::Number {
       number_type: _,
       int: _,
       float: _,
-    } => Ok(PrimaryValue::Constant(
-      parse_literal(parser, token).unwrap(),
-    )),
-    Token::String { value: _ } => Ok(PrimaryValue::Constant(
-      parse_literal(parser, token).unwrap(),
-    )),
+    } => Ok(PrimaryValue::Constant(parse_literal(parser).unwrap())),
+    Token::String { value: _ } => Ok(PrimaryValue::Constant(parse_literal(parser).unwrap())),
     _ => Err("Unexcepted token when parse_primary".to_owned()),
   };
 

@@ -1,11 +1,13 @@
-//! parse_literal.rs
-//! 解析term, 这里就是构造数字和字符串
+///! parse_literal.rs
+///! 解析term, 这里就是构造数字和字符串
 use crate::ast::Literal;
 use crate::parser::Parser;
 use crate::token::{NumberType, Token};
 
-pub fn parse_literal(_parser: &mut Parser, token: Token) -> Result<Literal, String> {
-  match token {
+pub fn parse_literal(_parser: &mut Parser) -> Result<Literal, String> {
+  let token = _parser.get_token();
+
+  let result = match token {
     Token::Number {
       number_type,
       int,
@@ -17,5 +19,11 @@ pub fn parse_literal(_parser: &mut Parser, token: Token) -> Result<Literal, Stri
     },
     Token::String { value } => Ok(Literal::string(value)),
     _ => Err(format!("Parse term error with token: {}", token)),
+  };
+
+  if result.is_ok() {
+    _parser.next_token();
   }
+
+  result
 }
