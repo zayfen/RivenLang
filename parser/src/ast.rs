@@ -478,3 +478,21 @@ impl BinaryOperator {
     }
   }
 }
+
+// Arithemtic expression
+#[derive(Clone, Debug, PartialEq)]
+pub struct ArithmeticExpr(
+  Term,
+  Option<EnumBinaryOperators>,
+  Option<Box<ArithmeticExpr>>,
+);
+
+impl ArithmeticExpr {
+  pub fn new(
+    left: Term,
+    operator: Option<EnumBinaryOperators>,
+    right: Option<Box<ArithmeticExpr>>,
+  ) -> Self {
+    ArithmeticExpr(left, operator, right)
+  }
+}
