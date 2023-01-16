@@ -482,9 +482,9 @@ impl BinaryOperator {
 // Arithemtic expression
 #[derive(Clone, Debug, PartialEq)]
 pub struct ArithmeticExpr(
-  Term,
-  Option<EnumBinaryOperators>,
-  Option<Box<ArithmeticExpr>>,
+  pub Term,
+  pub Option<EnumBinaryOperators>,
+  pub Option<Box<ArithmeticExpr>>,
 );
 
 impl ArithmeticExpr {
