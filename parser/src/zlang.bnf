@@ -1,10 +1,23 @@
 
+<statement>     ::= <if-statement>
+                | <function-statement>
 
+<function-statement>    ::= <identifier> ( <identifier-list> ) <statement-block>
+
+<if-statement>  ::= if (<arithmetic-expression>) <statement-block>
+
+<block-statement>   ::= { <expression-list> }
+
+<expression-list>   ::= <expression>
+                    | <expression> <expression-list>
 
 <expression>    ::= <assign-expression>
                 | <arithmetic-expression>
+                | <call-expression>
 
-<assign-expression>     ::= <identifier> = <arithmetic-expression>
+<call-expression>       ::= <identifier> ( <identifier-list> ) ;
+
+<assign-expression>     ::= <identifier> = <arithmetic-expression> ;
 
 <arithmetic-expression> ::= <term>
                         | <term> + <arithmetic-expression>
@@ -17,6 +30,9 @@
 <factor>    ::= <primary> | <identifier>
 
 <primary>   ::= <string> | <number>
+
+<identifier-list>       ::= <identifier>
+                        | <identifier> , <identifier-list>
 
 <identifier>    ::= [a-z][A-Z]
 
