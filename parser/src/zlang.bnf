@@ -2,22 +2,29 @@
 <statement>     ::= <if-statement>
                 | <function-statement>
 
-<function-statement>    ::= <identifier> ( <identifier-list> ) <statement-block>
+<function-statement>    ::= <identifier> ( <identifier-list> ) { <body-statement> }
 
-<if-statement>  ::= if (<arithmetic-expression>) <statement-block>
+<if-statement>  ::= if (<expression>) { <body-statement> }
 
-<block-statement>   ::= { <expression-list> }
+<body-statement>    ::= <basic-statement> ;
+                    | <basic-statement> ; <body-statement>
+                    | <if-statement>
+                    | <if-statement> <body-statement>
 
-<expression-list>   ::= <expression>
-                    | <expression> <expression-list>
 
-<expression>    ::= <assign-expression>
-                | <arithmetic-expression>
-                | <call-expression>
+<basic-statement>   ::= <assign-statement>
+                    | <call-expression>
+                    | <return-statement>
+
+<return-statement>  ::= return <expression>
+
+<assign-statement>     ::= <identifier> = <expression> ;
+
+
+<expression>    ::= <arithmetic-expression>
+                  | <call-expression>
 
 <call-expression>       ::= <identifier> ( <identifier-list> ) ;
-
-<assign-expression>     ::= <identifier> = <arithmetic-expression> ;
 
 <arithmetic-expression> ::= <term>
                         | <term> + <arithmetic-expression>
@@ -27,13 +34,17 @@
             | <factor> * <term>
             | <factor> / <term>
 
+// "hello", 123, userName
 <factor>    ::= <primary> | <identifier>
 
+// "hello", 123
 <primary>   ::= <string> | <number>
 
+// userName, Age
 <identifier-list>       ::= <identifier>
                         | <identifier> , <identifier-list>
 
+// useName
 <identifier>    ::= [a-z][A-Z]
 
 <string>    ::= '<charactoers>'
