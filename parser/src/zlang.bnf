@@ -2,7 +2,7 @@
 <statement>     ::= <if-statement>
                 | <function-statement>
 
-<function-statement>    ::= <identifier> ( <identifier-list> ) { <body-statement> }
+<function-statement>    ::= function <identifier> ( <identifier-list> ) { <body-statement> }
 
 <if-statement>  ::= if (<expression>) { <body-statement> }
 

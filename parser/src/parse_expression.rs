@@ -5,6 +5,9 @@ use crate::parse_term::parse_term;
 use crate::parser::Parser;
 use crate::token::Token;
 
+/// # parse_arithmetic_expr
+/// example source code: 1 * 2 + 3
+///
 pub fn parse_arithmetic_expr(parser: &mut Parser) -> Result<ArithmeticExpr, String> {
   let term_result = parse_term(parser);
 
@@ -38,3 +41,15 @@ pub fn parse_arithmetic_expr(parser: &mut Parser) -> Result<ArithmeticExpr, Stri
 
   Ok(result)
 }
+
+// assign expression
+// example var a = 1 * 2
+
+// logic expression, return boolean(true or false)
+// example 1 * 2 > 3 + 0 return false
+//
+
+// if statement
+// if <logic_expression> {<statement>}
+
+// function statement
