@@ -1,29 +1,36 @@
-use crate::ast::{Identifier, Primary, PrimaryValue};
-use crate::parse_literal::parse_literal;
+use num_traits::ToPrimitive;
+
+use crate::ast::{Primary, PrimaryValue};
 use crate::parser::Parser;
 use crate::token::Token;
 
-pub fn parse_primary(parser: &mut Parser) -> Result<Primary, String> {
+pub fn match_primary(token: Token) -> bool {
+  token.is_number() || token.is_string()
+}
+
+pub fn parse_primary(parser: &mut Parser) -> Primary {
   let token = parser.get_token();
   let ref_token = &token;
 
-  let primary_value = match ref_token {
-    Token::Id { name } => {
-      parser.next_token();
-      Ok(PrimaryValue::Variable(Identifier(name.to_owned())))
-    }
+  let value: PrimaryValue = match ref_token {
     Token::Number {
-      number_type: _,
-      int: _,
-      float: _,
-    } => Ok(PrimaryValue::Constant(parse_literal(parser).unwrap())),
-    Token::String { value: _ } => Ok(PrimaryValue::Constant(parse_literal(parser).unwrap())),
-    _ => Err("Unexcepted token when parse_primary".to_owned()),
+      number_type,
+      int,
+      float,
+    } => {
+      if number_type.is_int() {
+        PrimaryValue::Number(int.to_f64().unwrap())
+      } else {
+        PrimaryValue::Number(*float)
+      }
+    }
+
+    Token::String { value } => PrimaryValue::String(value.to_string()),
+    _ => panic!("Mismatched token {:?}", *ref_token),
   };
 
-  if primary_value.is_err() {
-    panic!("unexcepted token when parse_primary");
-  }
+  // advance token
+  parser.advance_token();
 
-  Ok(Primary::new(primary_value.unwrap()))
+  Primary::from(value)
 }

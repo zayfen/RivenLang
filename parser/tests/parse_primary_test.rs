@@ -1,5 +1,6 @@
+use log::debug;
 use parser::{
-  ast::{Identifier, Literal, Primary, PrimaryValue},
+  ast::{Primary, PrimaryValue},
   parse_primary::parse_primary,
   parser::Parser,
 };
@@ -8,37 +9,22 @@ use parser::{
 fn test_parse_primary_string() {
   let mut parser = Parser::new("'123'");
   let token = parser.get_token();
-  let primary_node_result = parse_primary(&mut parser);
-  let primary_node: Primary = primary_node_result.unwrap();
+  let primary = parse_primary(&mut parser);
 
   assert_eq!(
-    primary_node,
-    Primary::new(PrimaryValue::Constant(Literal::string("123".to_owned())))
+    primary,
+    Primary::from(PrimaryValue::String("123".to_owned()))
   );
+
+  println!("{:?}", primary);
 }
 
 #[test]
 fn test_parse_primary_number() {
   let mut parser = Parser::new("123");
   let token = parser.get_token();
-  let primary_node_result = parse_primary(&mut parser);
-  let primary_node = primary_node_result.unwrap();
+  let primary = parse_primary(&mut parser);
 
-  assert_eq!(
-    primary_node,
-    Primary::new(PrimaryValue::Constant(Literal::number(123f64)))
-  );
-}
-
-#[test]
-fn test_parse_primary_id() {
-  let mut parser = Parser::new("name");
-  let token = parser.get_token();
-  let primary_node_result = parse_primary(&mut parser);
-  let primary_node = primary_node_result.unwrap();
-
-  assert_eq!(
-    primary_node,
-    Primary::new(PrimaryValue::Variable(Identifier("name".to_owned())))
-  )
+  assert_eq!(primary, Primary::from(PrimaryValue::Number(123f64)));
+  println!("{:?}", primary);
 }

@@ -41,7 +41,7 @@ impl<'a> Parser<'a> {
   }
 
   // get next token and advances the current token
-  pub fn next_token(&mut self) -> Token {
+  pub fn advance_token(&mut self) -> Token {
     self.next_token = self.nnext_token.clone();
     self.nnext_token = advance_token(&mut self.lex);
 
@@ -69,7 +69,7 @@ impl<'a> Parser<'a> {
       ));
     }
 
-    self.next_token();
+    self.advance_token();
     Ok(true)
   }
 

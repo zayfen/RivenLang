@@ -8,6 +8,16 @@ pub enum NumberType {
   Complex,
 }
 
+impl NumberType {
+  pub fn is_int(&self) -> bool {
+    matches!(*self, NumberType::Int)
+  }
+
+  pub fn is_float(&self) -> bool {
+    matches!(*self, NumberType::Float)
+  }
+}
+
 impl fmt::Display for NumberType {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
@@ -82,6 +92,23 @@ pub enum Token {
   Dot,         // .
   Semicolon,   // ;
   Comma,       // ,
+}
+
+impl Token {
+  pub fn is_number(&self) -> bool {
+    matches!(
+      self.clone(),
+      Token::Number {
+        number_type: _,
+        int: _,
+        float: _
+      }
+    )
+  }
+
+  pub fn is_string(&self) -> bool {
+    matches!(self.clone(), Token::String { value: _ })
+  }
 }
 
 impl fmt::Display for Token {

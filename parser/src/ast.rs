@@ -3,10 +3,7 @@ use std::fmt::Display;
 use std::matches;
 use std::string::String;
 
-/*
- * virtual node for zlang
-*/
-use crate::location::SourceLocation;
+// use crate::location::SourceLocation;
 
 // 所有的Node枚举
 #[derive(Clone, Debug, PartialEq)]
@@ -95,5 +92,41 @@ pub struct Factor(FactorValue);
 impl From<FactorValue> for Factor {
   fn from(item: FactorValue) -> Self {
     Factor(item)
+  }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum BinOp {
+  Time,
+  Div,
+  Add,
+  Min,
+}
+
+impl BinOp {
+  pub fn is_time(&self) -> bool {
+    matches!(*self, BinOp::Time)
+  }
+
+  pub fn is_div(&self) -> bool {
+    matches!(*self, BinOp::Div)
+  }
+
+  pub fn is_add(&self) -> bool {
+    matches!(*self, BinOp::Add)
+  }
+
+  pub fn is_min(&self) -> bool {
+    matches!(*self, BinOp::Min)
+  }
+}
+
+// BinOp here only can be Time、 Div
+#[derive(Debug, Clone, PartialEq)]
+pub struct Term(Factor, BinOp, Box<Term>);
+
+impl Term {
+  pub fn new(factor: Factor, op: BinOp, boxed_term: Box<Term>) -> Self {
+    Term(factor, op, boxed_term)
   }
 }
