@@ -24,9 +24,9 @@ pub enum Kind {
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Identifier(String);
-impl Identifier {
-  pub fn new(id: &str) -> Identifier {
-    Identifier(id.to_owned())
+impl From<&str> for Identifier {
+  fn from(item: &str) -> Self {
+    Identifier(item.to_owned())
   }
 }
 
@@ -123,10 +123,40 @@ impl BinOp {
 
 // BinOp here only can be Time、 Div
 #[derive(Debug, Clone, PartialEq)]
-pub struct Term(Factor, BinOp, Box<Term>);
+pub struct Term(pub Factor, Option<BinOp>, Option<Box<Term>>);
 
 impl Term {
-  pub fn new(factor: Factor, op: BinOp, boxed_term: Box<Term>) -> Self {
+  pub fn new(factor: Factor, op: Option<BinOp>, boxed_term: Option<Box<Term>>) -> Self {
     Term(factor, op, boxed_term)
+  }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ArithmeticExpr(Term, Option<BinOp>, Option<Box<ArithmeticExpr>>);
+
+impl ArithmeticExpr {
+  pub fn new(term: Term, op: Option<BinOp>, arith_expr: Option<Box<ArithmeticExpr>>) -> Self {
+    ArithmeticExpr(term, op, arith_expr)
+  }
+}
+
+impl Display for ArithmeticExpr {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    write!(
+      f,
+      "ArithmeticExpr({:?}, {:?}, {:?})",
+      self.0,
+      self.1,
+      self.2.to_owned()
+    )
+  }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct CallExpr(Identifier, Vec<Identifier>);
+
+impl CallExpr {
+  pub fn new(fn_name: Identifier, args: Vec<Identifier>) -> Self {
+    CallExpr(fn_name, args)
   }
 }

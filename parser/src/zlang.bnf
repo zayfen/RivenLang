@@ -16,11 +16,12 @@
                     | <call-expression>
                     | <return-statement>
 
-<return-statement>  ::= return <expression>
+<return-statement>  ::= return <expression> ;
 
 <assign-statement>     ::= <identifier> = <expression> ;
 
 
+// identifier (  <=> identifier [*/+-]
 <expression>    ::= <arithmetic-expression>
                   | <call-expression>
 

@@ -4,7 +4,7 @@ use crate::ast::{Primary, PrimaryValue};
 use crate::parser::Parser;
 use crate::token::Token;
 
-pub fn match_primary(token: Token) -> bool {
+pub(crate) fn match_primary(token: Token) -> bool {
   token.is_number() || token.is_string()
 }
 

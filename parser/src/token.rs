@@ -107,7 +107,39 @@ impl Token {
   }
 
   pub fn is_string(&self) -> bool {
-    matches!(self.clone(), Token::String { value: _ })
+    matches!(self, Token::String { value: _ })
+  }
+
+  pub fn is_star(&self) -> bool {
+    matches!(self, Token::Star)
+  }
+
+  pub fn is_slash(&self) -> bool {
+    matches!(self, Token::Slash)
+  }
+
+  pub fn is_plus(&self) -> bool {
+    matches!(self, Token::Plus)
+  }
+
+  pub fn is_minus(&self) -> bool {
+    matches!(self, Token::Minus)
+  }
+
+  pub fn is_lpar(&self) -> bool {
+    matches!(self, Token::LPar)
+  }
+
+  pub fn is_rpar(&self) -> bool {
+    matches!(self, Token::RPar)
+  }
+
+  pub fn is_id(&self) -> bool {
+    matches!(self, Token::Id { name: _ })
+  }
+
+  pub fn is_comma(&self) -> bool {
+    matches!(self, Token::Comma)
   }
 }
 

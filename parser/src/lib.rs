@@ -27,7 +27,11 @@ pub mod location;
 pub mod parser;
 pub mod token;
 
+pub mod parse_arithmetic_expr;
+pub mod parse_call_expr;
+pub mod parse_factor;
 pub mod parse_primary;
+pub mod parse_term;
 
 // pub mod parse_literal;
 // pub mod parse_primary;
