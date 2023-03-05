@@ -132,7 +132,7 @@ impl Term {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct ArithmeticExpr(Term, Option<BinOp>, Option<Box<ArithmeticExpr>>);
+pub struct ArithmeticExpr(pub Term, Option<BinOp>, Option<Box<ArithmeticExpr>>);
 
 impl ArithmeticExpr {
   pub fn new(term: Term, op: Option<BinOp>, arith_expr: Option<Box<ArithmeticExpr>>) -> Self {
@@ -158,5 +158,33 @@ pub struct CallExpr(Identifier, Vec<Identifier>);
 impl CallExpr {
   pub fn new(fn_name: Identifier, args: Vec<Identifier>) -> Self {
     CallExpr(fn_name, args)
+  }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum ExpressionValue {
+  CallExpr(CallExpr),
+  ArithmeticExpr(ArithmeticExpr),
+}
+
+impl ExpressionValue {
+  pub fn is_call_expr(&self) -> bool {
+    matches!(self, ExpressionValue::CallExpr(CallExpr(id, args)))
+  }
+
+  pub fn is_arithmetic_expr(&self) -> bool {
+    matches!(
+      self,
+      ExpressionValue::ArithmeticExpr(ArithmeticExpr(term, op, arith_expr))
+    )
+  }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Expression(ExpressionValue);
+
+impl From<ExpressionValue> for Expression {
+  fn from(value: ExpressionValue) -> Self {
+    Expression(value)
   }
 }

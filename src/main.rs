@@ -1,8 +1,8 @@
-use parser::parser::Parser;
+use parser::{parser::Parser, parse_arithmetic_expr::parse_arithmetic_expr};
 
 fn main() {
-  let p = Parser::new("a = 10");
+  let mut p = Parser::new("name + 3 / 2 * count");
   println!("{:?}", p);
-  println!("Hello, world!");
-  println!("Hello");
+  let expr = parse_arithmetic_expr(&mut p);
+  println!("expr: {:?}", expr);
 }
