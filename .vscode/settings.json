@@ -1,7 +1,7 @@
 {
-  "editor.fontSize": 16,
+  "editor.fontSize": 14,
   "editor.tabSize": 2,
-  "editor.fontFamily": "'Souce Code Pro',Consolas, 'Courier New', monospace",
+  "editor.fontFamily": "'Ligalex Mono','Souce Code Pro',Consolas, 'Courier New', monospace",
   "debug.console.fontSize": 18,
   "scm.inputFontSize": 16,
   "extensions.webWorker": true,
