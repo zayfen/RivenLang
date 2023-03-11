@@ -32,7 +32,7 @@ impl From<&str> for Identifier {
 
 impl Display for Identifier {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    write!(f, "Identifier({:?})", self.0)
+    write!(f, "{:?}", self.0)
   }
 }
 

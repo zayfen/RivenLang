@@ -1,4 +1,4 @@
-use crate::ast::{Primary, PrimaryValue};
+use crate::ast::{Factor, FactorValue, Identifier, Primary, PrimaryValue};
 
 /// code generator
 ///
@@ -49,6 +49,8 @@ impl Emitter {
 
 pub trait CodeGenerator {
   fn visit_primary(&mut self, primary: &Primary);
+  fn visit_identifier(&mut self, identifier: &Identifier);
+  fn visit_factor(&mut self, factor: &Factor);
 }
 
 pub struct CCodeGenManager<'a> {
@@ -72,6 +74,18 @@ impl<'a> CodeGenerator for CCodeGenManager<'a> {
     match primary {
       Primary(PrimaryValue::String(s)) => self.emitter.push_line(format!("{:?}", s).as_str()),
       Primary(PrimaryValue::Number(n)) => self.emitter.push_line(format!("{:?}", n).as_str()),
+    }
+  }
+
+  fn visit_identifier(&mut self, identifier: &Identifier) {
+    let id = identifier.to_string();
+    self.emitter.push_line(id.as_str());
+  }
+
+  fn visit_factor(&mut self, factor: &Factor) {
+    match factor {
+      Factor(FactorValue::Primary(primary)) => self.visit_primary(primary),
+      Factor(FactorValue::Identifier(identifier)) => self.visit_identifier(identifier),
     }
   }
 }
