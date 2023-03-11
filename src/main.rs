@@ -1,8 +1,17 @@
-use parser::{parser::Parser, parse_arithmetic_expr::parse_arithmetic_expr};
+use parser::{
+  codegen::{CCodeGenManager, CodeGenerator, Emitter},
+  parse_primary::parse_primary,
+  parser::Parser,
+};
 
 fn main() {
-  let mut p = Parser::new("name + 3 / 2 * count");
-  println!("{:?}", p);
-  let expr = parse_arithmetic_expr(&mut p);
-  println!("expr: {:?}", expr);
+  let mut p = Parser::new("'hello world'");
+  let primary = parse_primary(&mut p);
+
+  let mut emmiter = Emitter::new();
+  let mut codegen = CCodeGenManager::new(&mut emmiter);
+
+  codegen.visit_primary(&primary);
+  println!("Generated source code: ");
+  println!("{}", emmiter.gen_code());
 }

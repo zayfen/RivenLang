@@ -62,7 +62,7 @@ impl Display for PrimaryValue {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct Primary(PrimaryValue);
+pub struct Primary(pub(crate) PrimaryValue);
 
 impl From<PrimaryValue> for Primary {
   fn from(item: PrimaryValue) -> Self {
