@@ -62,7 +62,7 @@ pub enum Token {
   Break,
   Continue,
   Function,
-  Main,
+  Program,
   Comment {
     value: String,
   },
@@ -233,7 +233,7 @@ impl fmt::Display for Token {
       Semicolon => f.write_str(";"),
       Comma => f.write_str(","),
       Function => f.write_str("FUNCTION"),
-      Main => f.write_str("MAIN"),
+      Program => f.write_str("MAIN"),
     }
   }
 }
@@ -293,7 +293,7 @@ pub fn get_token_kind(token: Token) -> String {
     Semicolon => "Semicolon".to_owned(),
     Comma => "Comma".to_owned(),
     Function => "FUNCTION".to_owned(),
-    Main => "MAIN".to_owned(),
+    Program => "MAIN".to_owned(),
   }
 }
 
