@@ -62,7 +62,7 @@ impl Display for PrimaryValue {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct Primary(pub(crate) PrimaryValue);
+pub struct Primary(pub PrimaryValue);
 
 impl From<PrimaryValue> for Primary {
   fn from(item: PrimaryValue) -> Self {
@@ -87,7 +87,7 @@ impl FactorValue {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Factor(FactorValue);
+pub struct Factor(pub FactorValue);
 
 impl From<FactorValue> for Factor {
   fn from(item: FactorValue) -> Self {

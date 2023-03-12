@@ -27,7 +27,6 @@ pub mod location;
 pub mod parser;
 pub mod token;
 
-pub mod codegen;
 pub mod parse_arithmetic_expr;
 pub mod parse_call_expr;
 pub mod parse_expression;

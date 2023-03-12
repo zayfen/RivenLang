@@ -1,8 +1,8 @@
 use parser::{
-  codegen::{CCodeGenManager, CodeGenerator, Emitter},
   parse_primary::parse_primary,
   parser::Parser,
 };
+use codegen::codegen::{CCodeGenManager, CodeGenerator, Emitter};
 
 fn main() {
   let mut p = Parser::new("'hello world'");

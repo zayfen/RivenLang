@@ -1,4 +1,4 @@
-use crate::ast::{Factor, FactorValue, Identifier, Primary, PrimaryValue};
+use parser::ast::{Factor, FactorValue, Identifier, Primary, PrimaryValue};
 
 /// code generator
 ///
