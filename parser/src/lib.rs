@@ -33,6 +33,13 @@ pub mod parse_expression;
 pub mod parse_factor;
 pub mod parse_primary;
 pub mod parse_term;
+pub mod parse_assign_statement;
+pub mod parse_return_statement;
+pub mod parse_if_stmt;
+pub mod parse_function_stmt;
+pub mod parse_stmt;
+pub mod parse_stmt_list;
+pub mod parse_program;
 
 // pub mod parse_literal;
 // pub mod parse_primary;

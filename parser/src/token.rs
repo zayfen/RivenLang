@@ -61,6 +61,8 @@ pub enum Token {
   Return,
   Break,
   Continue,
+  Function,
+  Main,
   Comment {
     value: String,
   },
@@ -134,6 +136,14 @@ impl Token {
     matches!(self, Token::RPar)
   }
 
+  pub fn is_lbrace(&self) -> bool {
+    matches!(self, Token::LBrace)
+  }
+
+  pub fn is_rbrace(&self) -> bool {
+    matches!(self, Token::RBrace)
+  }
+
   pub fn is_id(&self) -> bool {
     matches!(self, Token::Id { name: _ })
   }
@@ -141,6 +151,27 @@ impl Token {
   pub fn is_comma(&self) -> bool {
     matches!(self, Token::Comma)
   }
+
+  pub fn is_eq(&self) -> bool {
+    matches!(self, Token::Equal)
+  }
+
+  pub fn is_semi(&self) -> bool {
+    matches!(self, Token::Semicolon)
+  }
+
+  pub fn is_keyword_return(&self) -> bool {
+    matches!(self, Token::Return)
+  }
+
+  pub fn is_keyword_if(&self) -> bool {
+    matches!(self, Token::If)
+  }
+
+  pub fn is_keyword_function(&self) -> bool {
+    matches!(self, Token::Function)
+  }
+
 }
 
 impl fmt::Display for Token {
@@ -201,6 +232,8 @@ impl fmt::Display for Token {
       Dot => f.write_str("."),
       Semicolon => f.write_str(";"),
       Comma => f.write_str(","),
+      Function => f.write_str("FUNCTION"),
+      Main => f.write_str("MAIN"),
     }
   }
 }
@@ -259,6 +292,8 @@ pub fn get_token_kind(token: Token) -> String {
     Dot => "Dot".to_owned(),
     Semicolon => "Semicolon".to_owned(),
     Comma => "Comma".to_owned(),
+    Function => "FUNCTION".to_owned(),
+    Main => "MAIN".to_owned(),
   }
 }
 

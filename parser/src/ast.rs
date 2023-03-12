@@ -32,7 +32,7 @@ impl From<&str> for Identifier {
 
 impl Display for Identifier {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    write!(f, "{:?}", self.0)
+    write!(f, "{}", self.0)
   }
 }
 
@@ -103,6 +103,17 @@ pub enum BinOp {
   Min,
 }
 
+impl Display for BinOp {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    match self {
+      BinOp::Time => write!(f, "{}", " * "),
+      BinOp::Div => write!(f, "{}", " / "),
+      BinOp::Add => write!(f, "{}", " + "),
+      BinOp::Min => write!(f, "{}", " - "),
+    }
+  }
+}
+
 impl BinOp {
   pub fn is_time(&self) -> bool {
     matches!(*self, BinOp::Time)
@@ -123,7 +134,7 @@ impl BinOp {
 
 // BinOp here only can be Time、 Div
 #[derive(Debug, Clone, PartialEq)]
-pub struct Term(pub Factor, Option<BinOp>, Option<Box<Term>>);
+pub struct Term(pub Factor, pub Option<BinOp>, pub Option<Box<Term>>);
 
 impl Term {
   pub fn new(factor: Factor, op: Option<BinOp>, boxed_term: Option<Box<Term>>) -> Self {
@@ -132,7 +143,7 @@ impl Term {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct ArithmeticExpr(pub Term, Option<BinOp>, Option<Box<ArithmeticExpr>>);
+pub struct ArithmeticExpr(pub Term, pub Option<BinOp>, pub Option<Box<ArithmeticExpr>>);
 
 impl ArithmeticExpr {
   pub fn new(term: Term, op: Option<BinOp>, arith_expr: Option<Box<ArithmeticExpr>>) -> Self {
@@ -153,7 +164,7 @@ impl Display for ArithmeticExpr {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct CallExpr(Identifier, Vec<Identifier>);
+pub struct CallExpr(pub Identifier, pub Vec<Identifier>);
 
 impl CallExpr {
   pub fn new(fn_name: Identifier, args: Vec<Identifier>) -> Self {
@@ -181,10 +192,70 @@ impl ExpressionValue {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Expression(ExpressionValue);
+pub struct Expression(pub ExpressionValue);
 
 impl From<ExpressionValue> for Expression {
   fn from(value: ExpressionValue) -> Self {
     Expression(value)
   }
 }
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct AssignStmt(pub Identifier, pub Expression);
+
+impl AssignStmt {
+  pub fn new(id: Identifier, expr: Expression) -> Self {
+    AssignStmt(id, expr)
+  }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ReturnStmt(pub Expression);
+
+impl ReturnStmt {
+  pub fn new(expr: Expression) -> Self {
+    ReturnStmt(expr)
+  }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct IfStmt(Expression, Option<Box<StmtList>>);
+
+impl IfStmt {
+  pub fn new(expr: Expression, stmt_list: StmtList) -> Self {
+    IfStmt(expr, Some(Box::new(stmt_list)))
+  }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct FunctionStmt(Identifier, Vec<Identifier>, Option<Box<StmtList>>);
+
+impl FunctionStmt {
+  pub fn new(id: Identifier, params: Vec<Identifier>, stmt_list: StmtList) -> Self {
+    FunctionStmt(id, params, Some(Box::new(stmt_list)))
+  }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum StatementValue {
+  AssignStmt(AssignStmt),
+  CallStmt(CallExpr),
+  ReturnStmt(ReturnStmt),
+  FunctionStmt(FunctionStmt),
+  IfStmt(IfStmt),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Statement(StatementValue);
+
+impl From<StatementValue> for Statement {
+  fn from(value: StatementValue) -> Self {
+    Statement(value)
+  }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct StmtList(pub Option<Statement>, pub Option<Box<StmtList>>);
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Program(pub StmtList);

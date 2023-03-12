@@ -1,20 +1,19 @@
 
-<statement>     ::= <if-statement>
-                | <function-statement>
 
-<function-statement>    ::= function <identifier> ( <identifier-list> ) { <body-statement> }
+<program>   ::= MAIN { <statement-list> }
 
-<if-statement>  ::= if (<expression>) { <body-statement> }
+<statement-list>    ::= <empty>
+                        | <statement> <statement-list>
 
-<body-statement>    ::= <basic-statement> ;
-                    | <basic-statement> ; <body-statement>
-                    | <if-statement>
-                    | <if-statement> <body-statement>
-
-
-<basic-statement>   ::= <assign-statement>
-                    | <call-expression>
+<statement>   ::=   <assign-statement>
+                    | <call-expression> ;
                     | <return-statement>
+                    | <function-statement>
+                    | <if-statement>
+
+<function-statement>  ::= function <identifier> ( <identifier-list> ) { <statement-list> }
+
+<if-statement>  ::= if (<expression>) { <statement-list> }
 
 <return-statement>  ::= return <expression> ;
 

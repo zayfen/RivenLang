@@ -54,23 +54,17 @@ impl<'a> Parser<'a> {
   }
 
   // return true if current token matches.
-  pub fn check_token(&mut self, token: Token) -> bool {
-    self.next_token == token
+  pub fn check_token(&mut self, token: &Token) -> bool {
+    self.next_token.to_string() == token.to_string()
   }
 
-  pub fn match_token(&mut self, token: Token) -> Result<bool, String> {
-    let clone_token = token.clone();
+  pub fn eat_token(&mut self, token: Token) {
 
-    if !self.check_token(token) {
-      return Err(format!(
-        "expect {} but got {}",
-        clone_token,
-        self.get_token()
-      ));
+    if !self.check_token(&token) {
+      panic!("token dont match, expect {:?}, but found {:?}", token, self.next_token.clone());
     }
 
     self.advance_token();
-    Ok(true)
   }
 
   // get next token but don't advance
@@ -80,6 +74,7 @@ impl<'a> Parser<'a> {
 
   // return true if next token matches.
   pub fn check_peek(&mut self, token: Token) -> bool {
-    self.peek_token() == token
+    self.peek_token().to_string() == token.to_string()
   }
+
 }

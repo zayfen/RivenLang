@@ -43,6 +43,7 @@ pub fn get_keywords() -> HashMap<String, Token> {
   keywords.insert(String::from("return"), Token::Return);
   keywords.insert(String::from("break"), Token::Break);
   keywords.insert(String::from("continue"), Token::Continue);
+  keywords.insert(String::from("function"), Token::Function);
 
   keywords
 }

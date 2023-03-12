@@ -12,10 +12,5 @@ mod parser_test {
       format!("{:?}", call_expr),
       "CallExpr(Identifier(\"fn\"), [Identifier(\"id\"), Identifier(\"name\")])"
     );
-    // assert_eq!(call_expr.0, Identifier::from("fn"));
-    // assert_eq!(
-    //   call_expr.1,
-    //   vec![Identifier::from("id"), Identifier::from("name")]
-    // );
   }
 }
