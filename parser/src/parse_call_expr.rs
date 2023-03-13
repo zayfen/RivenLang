@@ -37,9 +37,7 @@ pub fn parse_call_expr(parser: &mut Parser) -> CallExpr {
   }
 
   // should be right parent
-  if !token.is_rpar() {
-    panic!("parse_call_expr error");
-  }
+  parser.eat_token(Token::RPar);
 
   CallExpr::new(Identifier::from(fn_name.as_str()), args)
 }

@@ -41,7 +41,7 @@ pub fn parse_if_stmt(parser: &mut Parser) -> IfStmt {
 
   // now cursor point to rbrace }
   if !parser.get_token().is_rbrace() {
-    panic!("parse if statement error: missing rbrace }")
+    panic!("parse if statement error: missing rbrace {}", "}")
   }
 
   IfStmt::new(expr, stmt_list)
@@ -49,7 +49,7 @@ pub fn parse_if_stmt(parser: &mut Parser) -> IfStmt {
 
 #[test]
 fn test_if_stmt() {
-  let code = "if (1 + 2) { name = \"zayfen\"; }";
+  let code = "if (1 + 2) { name = \"zayfen\"; foo(name); function foo2 (nage) {a = 1+2; b = 2+4; print(a,b);}}";
   let mut parser = Parser::new(code);
   let if_stmt = parse_if_stmt(&mut parser);
   println!("{:?}", if_stmt);

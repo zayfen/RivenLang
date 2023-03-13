@@ -228,7 +228,7 @@ impl IfStmt {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct FunctionStmt(Identifier, Vec<Identifier>, Option<Box<StmtList>>);
+pub struct FunctionStmt(pub Identifier, pub Vec<Identifier>, pub Option<Box<StmtList>>);
 
 impl FunctionStmt {
   pub fn new(id: Identifier, params: Vec<Identifier>, stmt_list: StmtList) -> Self {
