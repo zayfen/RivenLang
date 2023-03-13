@@ -28,6 +28,6 @@ pub fn parse_stmt(parser: &mut Parser) -> Statement {
       parser.eat_token(Token::Semicolon);
       return Statement::from(StatementValue::CallStmt(expr));
     }
-
-    panic!("parse stmt error");
+    
+    panic!("parse stmt error, token is {}", token.to_string());
 }

@@ -219,7 +219,7 @@ impl ReturnStmt {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct IfStmt(Expression, Option<Box<StmtList>>);
+pub struct IfStmt(pub Expression, pub Option<Box<StmtList>>);
 
 impl IfStmt {
   pub fn new(expr: Expression, stmt_list: StmtList) -> Self {

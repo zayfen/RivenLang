@@ -1,5 +1,9 @@
-use crate::{parser::Parser, ast::{IfStmt, StmtList}, parse_expression::parse_expression, parse_stmt_list::parse_stmt_list};
-
+use crate::{
+  ast::{IfStmt, StmtList},
+  parse_expression::parse_expression,
+  parse_stmt_list::parse_stmt_list,
+  parser::Parser,
+};
 
 pub fn match_if_stmt(parser: &mut Parser) -> bool {
   let token = parser.get_token();
@@ -15,7 +19,7 @@ pub fn parse_if_stmt(parser: &mut Parser) -> IfStmt {
   // now cursor point to (
   if !parser.get_token().is_lpar() {
     panic!("parse if statment error: missing LPAR('(')");
-  }  
+  }
 
   parser.advance_token();
   let expr = parse_expression(parser);
@@ -31,7 +35,8 @@ pub fn parse_if_stmt(parser: &mut Parser) -> IfStmt {
     panic!("parse if statement error: missing lbrace {");
   }
 
-  // TODO: parse_statement_list
+  parser.advance_token();
+
   let stmt_list = parse_stmt_list(parser);
 
   // now cursor point to rbrace }
@@ -40,4 +45,17 @@ pub fn parse_if_stmt(parser: &mut Parser) -> IfStmt {
   }
 
   IfStmt::new(expr, stmt_list)
+}
+
+#[test]
+fn test_if_stmt() {
+  let code = "if (1 + 2) { name = \"zayfen\"; }";
+  let mut parser = Parser::new(code);
+  let if_stmt = parse_if_stmt(&mut parser);
+  println!("{:?}", if_stmt);
+
+  let expr_code = "1 + 2";
+  let mut parser2 = Parser::new(expr_code);
+  let expr = parse_expression(&mut parser2);
+  assert_eq!(if_stmt.0, expr);
 }

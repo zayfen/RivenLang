@@ -27,10 +27,7 @@ pub fn parse_assign_stmt(parser: &mut Parser) -> AssignStmt {
 
   let expr = parse_expression(parser);
 
-  // now cursor point to ';'
-  if !parser.get_token().is_semi() {
-    panic!("parse assign stmt error, missing semicolon");
-  }
+  parser.eat_token(Token::Semicolon);
 
   AssignStmt(id, expr)
 }
