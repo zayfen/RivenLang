@@ -1,0 +1,15 @@
+program {
+    function fib(n) {
+      printf("%d\n", n);
+      nn = n-1;
+      if (nn) {
+        return fib(nn);
+      }
+    }
+
+    function main() {
+      n = 10;
+      fib(n);
+      return 0;
+    }
+  }

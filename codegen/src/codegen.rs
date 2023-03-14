@@ -160,8 +160,8 @@ impl<'a> CodeGenerator for CCodeGenManager<'a> {
 
   fn visit_assign_stmt(&mut self, stmt: &AssignStmt) {
     // TODO: check variable type here
-    // assume it's long type
-    self.emitter.emmit("long");
+    // assume it's int type
+    self.emitter.emmit("int");
 
     self.visit_identifier(&stmt.0);
     self.emitter.emmit("=");
@@ -189,11 +189,15 @@ impl<'a> CodeGenerator for CCodeGenManager<'a> {
 
 
   fn visit_function_stmt(&mut self, stmt: &FunctionStmt) {
-    // TODO: check function return type, assume long type here
-    self.emitter.emmit("long");
+    // TODO: check function return type, assume int type here
+    self.emitter.emmit("int");
     self.visit_identifier(&stmt.0);
     self.emitter.emmit("(");
     stmt.1.iter().enumerate().for_each(|(idx, id)| {
+
+      // FIXME: assume int type
+      self.emitter.emmit("int");
+
       self.visit_identifier(id);
       if idx < (stmt.1.len()-1) {
         self.emitter.emmit(",");
