@@ -27,12 +27,12 @@ pub mod location;
 pub mod parser;
 pub mod token;
 
+pub mod parse_primary;
+pub mod parse_factor;
+pub mod parse_term;
 pub mod parse_arithmetic_expr;
 pub mod parse_call_expr;
 pub mod parse_expression;
-pub mod parse_factor;
-pub mod parse_primary;
-pub mod parse_term;
 pub mod parse_assign_statement;
 pub mod parse_return_statement;
 pub mod parse_if_stmt;

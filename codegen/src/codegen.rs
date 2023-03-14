@@ -1,6 +1,7 @@
 use parser::ast::{
-  ArithmeticExpr, CallExpr, Expression, ExpressionValue, Factor, FactorValue, Identifier, Primary,
-  PrimaryValue, Term,
+  ArithmeticExpr, AssignStmt, CallExpr, Expression, ExpressionValue, Factor, FactorValue,
+  FunctionStmt, Identifier, IfStmt, Primary, PrimaryValue, Program, ReturnStmt, Statement,
+  StmtList, Term, StatementValue,
 };
 
 /// code generator
@@ -37,7 +38,7 @@ impl Emitter {
 
   pub fn gen_code(&self) -> String {
     let source_code_header = self.headers.join("\n");
-    let souce_code_body = self.lines.join("");
+    let souce_code_body = self.lines.join(" ");
     let source_code_tail = self.tail.join("\n");
 
     format!(
@@ -51,13 +52,21 @@ impl Emitter {
 }
 
 pub trait CodeGenerator {
-  fn visit_primary(&mut self, primary: &Primary);
   fn visit_identifier(&mut self, identifier: &Identifier);
+  fn visit_primary(&mut self, primary: &Primary);
   fn visit_factor(&mut self, factor: &Factor);
   fn visit_term(&mut self, term: &Term);
   fn visit_arithmetic_expr(&mut self, arithmetic_expr: &ArithmeticExpr);
   fn visit_call_expr(&mut self, call_expr: &CallExpr);
+  fn visit_call_stmt(&mut self, call_expr: &CallExpr);
   fn visit_expr(&mut self, expr: &Expression);
+  fn visit_assign_stmt(&mut self, stmt: &AssignStmt);
+  fn visit_return_stmt(&mut self, stmt: &ReturnStmt);
+  fn visit_if_stmt(&mut self, stmt: &IfStmt);
+  fn visit_function_stmt(&mut self, stmt: &FunctionStmt);
+  fn visit_stmt(&mut self, stmt: &Statement);
+  fn visit_stmt_list(&mut self, stmt_list: &StmtList);
+  fn visit_program(&mut self, program: &Program);
 }
 
 pub struct CCodeGenManager<'a> {
@@ -139,11 +148,90 @@ impl<'a> CodeGenerator for CCodeGenManager<'a> {
     self.emitter.emmit(")");
   }
 
+  fn visit_call_stmt(&mut self, call_expr: &CallExpr) {
+    self.visit_call_expr(call_expr);
+    self.emitter.emmit(";");
+  }
+
   fn visit_expr(&mut self, expr: &Expression) {
     let expr_value = &expr.0;
     match expr_value {
       ExpressionValue::CallExpr(call_expr) => self.visit_call_expr(call_expr),
       ExpressionValue::ArithmeticExpr(arith_expr) => self.visit_arithmetic_expr(arith_expr),
     }
+  }
+
+  fn visit_assign_stmt(&mut self, stmt: &AssignStmt) {
+    // TODO: check variable type here
+    // assume it's long type
+    self.emitter.emmit("long");
+
+    self.visit_identifier(&stmt.0);
+    self.emitter.emmit("=");
+    self.visit_expr(&stmt.1);
+    self.emitter.emmit(";");
+  }
+
+  fn visit_return_stmt(&mut self, stmt: &ReturnStmt) {
+    self.emitter.emmit("return");
+    self.visit_expr(&stmt.0);
+    self.emitter.emmit(";");
+  }
+
+  fn visit_if_stmt(&mut self, stmt: &IfStmt) {
+    self.emitter.emmit("if (");
+    self.visit_expr(&stmt.0);
+    self.emitter.emmit(") {");
+
+    if let Some(stmt_list) = &stmt.1 {
+      self.visit_stmt_list(&stmt_list);
+    }
+
+    self.emitter.emmit("}");
+  }
+
+
+  fn visit_function_stmt(&mut self, stmt: &FunctionStmt) {
+    // TODO: check function return type, assume long type here
+    self.emitter.emmit("long");
+    self.visit_identifier(&stmt.0);
+    self.emitter.emmit("(");
+    stmt.1.iter().enumerate().for_each(|(idx, id)| {
+      self.visit_identifier(id);
+      if idx < (stmt.1.len()-1) {
+        self.emitter.emmit(",");
+      }
+    });
+    self.emitter.emmit(") {");
+    if let Some(stmt_list) = &stmt.2 {
+      self.visit_stmt_list(stmt_list);
+    }
+    self.emitter.emmit("}");
+  }
+
+  fn visit_stmt(&mut self, stmt: &Statement) {
+    match &stmt.0 {
+      StatementValue::AssignStmt(stmt) => self.visit_assign_stmt(stmt),
+      StatementValue::CallStmt(stmt) => self.visit_call_stmt(stmt),
+      StatementValue::FunctionStmt(stmt) => self.visit_function_stmt(stmt),
+      StatementValue::IfStmt(stmt) => self.visit_if_stmt(stmt),
+      StatementValue::ReturnStmt(stmt) => self.visit_return_stmt(stmt)
+    }
+  }
+
+  fn visit_stmt_list(&mut self, stmt_list: &StmtList) {
+    if let Some(stmt) = &stmt_list.0 {
+      self.visit_stmt(stmt);
+    }
+
+    if let Some(rests_stmts) = &stmt_list.1 {
+      self.visit_stmt_list(rests_stmts);
+    } else {
+      dbg!(stmt_list);
+    }
+  }
+
+  fn visit_program(&mut self, program: &Program) {
+    self.visit_stmt_list(&program.0);
   }
 }

@@ -246,7 +246,7 @@ pub enum StatementValue {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Statement(StatementValue);
+pub struct Statement(pub StatementValue);
 
 impl From<StatementValue> for Statement {
   fn from(value: StatementValue) -> Self {

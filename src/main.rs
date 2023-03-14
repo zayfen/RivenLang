@@ -1,17 +1,27 @@
 use parser::{
-  parse_primary::parse_primary,
-  parser::Parser,
+  parser::Parser, parse_program::parse_program,
 };
 use codegen::codegen::{CCodeGenManager, CodeGenerator, Emitter};
 
 fn main() {
-  let mut p = Parser::new("'hello world'");
-  let primary = parse_primary(&mut p);
+  let mut p = Parser::new("program {
+    function fib(n) {
+      printf(n);
+      nn = n-1;
+      if (nn) {
+        return fib(nn);
+      }
+    }
+    n = 10;
+    fib(n);
+  }");
+
+  let program = parse_program(&mut p);
 
   let mut emmiter = Emitter::new();
   let mut codegen = CCodeGenManager::new(&mut emmiter);
 
-  codegen.visit_primary(&primary);
+  codegen.visit_program(&program);
   println!("Generated source code: ");
   println!("{}", emmiter.gen_code());
 }
