@@ -19,15 +19,17 @@
 
 <assign-statement>     ::= <identifier> = <expression> ;
 
-<expression-list>   ::= <empty>
-                      | <expression>
+<call-statement>    ::= <call-expression> ;
+
+<expression-list>   ::= <expression>
                       | <expresison> , <expression-list>
 
 // identifier (  <=> identifier [*/+-]
 <expression>    ::= <arithmetic-expression>
                   | <call-expression>
 
-<call-expression>       ::= <identifier> ( <expression-list> ) ;
+<call-expression>       ::= <identifier> ()
+                          | <identifier> ( <expression-list> )
 
 <arithmetic-expression> ::= <term>
                         | <term> + <arithmetic-expression>
