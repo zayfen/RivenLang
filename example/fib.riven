@@ -1,3 +1,7 @@
+
+
+// this code print number from 10 to 1 eache line.
+
 program {
     function fib(n) {
       printf("%d\n", n);
@@ -13,3 +17,5 @@ program {
       return 0;
     }
   }
+
+
