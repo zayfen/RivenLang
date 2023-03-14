@@ -14,5 +14,5 @@ parser = { path="parser", version="0.1.0" }
 codegen = { path="codegen", version="0.1.0" }
 
 [[bin]]
-name="zlang"
+name="riven"
 path="src/main.rs"
