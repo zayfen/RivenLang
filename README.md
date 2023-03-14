@@ -5,226 +5,67 @@ Learning resource: [TeenytinyCompiler](https://austinhenley.com/blog/teenytinyco
 
 ## grammar
 
-### Node Objects
-#### Node
 ```
-struct Node {
-  type: String,
-  loc: SourceLocation | None
-}
-```
+<program>   ::= MAIN { <statement-list> }
 
-#### Location
-```
-struct Location {
-  row: usize,
-  column: usize
-}
-```
+<statement-list>    ::= <empty>
+                        | <statement> <statement-list>
 
-#### SourceLocation
-```
-struct SourceLocation {
-  source: String | None,
-  start: Location,
-  end: Location
-}
-```
+<statement>   ::=   <assign-statement>
+                    | <call-expression> ;
+                    | <return-statement>
+                    | <function-statement>
+                    | <if-statement>
 
-### Programs
-```
-struct Program <: Node {
-  type: "Program",
-  body: Vec<Statement>
-}
-```
+<function-statement>  ::= function <identifier> ( <identifier-list> ) { <statement-list> }
 
-### Functions
-```
-struct Property <: Node {
-  type: "property",
-  id: Identifier | None
-}
+<if-statement>  ::= if (<expression>) { <statement-list> }
 
-struct Function <: Node {
-  type: "Function",
-  id: Identifier | None,
-  params: Vec<Property>,
-  body: BlockStatement
-}
-```
+<return-statement>  ::= return <expression> ;
 
-### Statements
-```
-struct Statement <: Node { }
-```
+<assign-statement>     ::= <identifier> = <expression> ;
 
-#### EmptyStatement
-```
-// empty statement
-struct EmptyStatement <: Statement {
-  type: "EmptyStatement"
-}
+<call-statement>    ::= <call-expression> ;
 
-```
-#### BlockStatement
-```
-struct BlockStatement <: Statement {
-  type: "BlockStatement",
-  body: Vec<Statement>
-}
-```
+<expression-list>   ::= <expression>
+                      | <expresison> , <expression-list>
 
-#### ExpressionStatement
-```
-struct ExpressionStatement <: Statement {
-  type: "ExpressionStatement",
-  expression: Expression
-}
-```
+// identifier (  <=> identifier [*/+-]
+<expression>    ::= <arithmetic-expression>
+                  | <call-expression>
 
-#### IfStatement
-```
-struct IfStatement <: Statement {
-  type: "IfStatement",
-  test: Expression,
-  consequent: Statement,
-  alternate: Statement | None
-}
-```
+<call-expression>       ::= <identifier> ()
+                          | <identifier> ( <expression-list> )
 
-#### ReturnStatement
-```
-struct ReturnStatement <: Statement {
-  type: "ReturnStatement",
-  argument: Expression | None
-}
-```
+<arithmetic-expression> ::= <term>
+                        | <term> + <arithmetic-expression>
+                        | <term> - <arithmetic-expression>
 
-#### WhileStatement
-```
-struct WhileStatement <: Statement {
-  type: "WhileStatement",
-  test: Expression,
-  body: BlockStatement
-}
-```
+<term>      ::= <factor>
+            | <factor> * <term>
+            | <factor> / <term>
 
-#### ForInStatement
-```
-struct ForInStatement <: Statement {
-  type: "ForInStatement",
-  left: Expression,
-  right: Expression,
-  body: BlockStatement,
-  each: boolean
-}
-```
+// "hello", 123, userName
+<factor>    ::= <primary> | <identifier>
 
-### Expression
-```
-struct Expression <: Node {
-}
-```
+// "hello", 123
+<primary>   ::= <string> | <number>
 
-#### ArrayExpression
-```
-struct ArrayExpression <: Expression {
-  type: "ArrayExpression",
-  elements: Vec<Expression>
-}
-```
+// userName, Age
+<identifier-list>       ::= <identifier>
+                        | <identifier> , <identifier-list>
 
-#### AssignmentExpression
-```
-struct AssignmentExpression <: Expression {
-  type: "AssignmentExpression",
-  opertaor: AssignmentOperator,
-  left: Expression,
-  right: Expression
-}
-```
+// useName
+<identifier>    ::= [a-z][A-Z]
 
-#### LogicalExpression
-```
-struct LogicalExpression <: Expression {
-  type: "LogicalExpression",
-  operator: LogicalOperator,
-  left: Expression,
-  right: Expression
-}
-```
-
-#### CallExpression
-```
-struct CallExpression <: Expression {
-  type: "CallExpression",
-  callee: Expression,
-  arguments: [ Expression | None ]
-}
-```
-
-### Miscellaneous
-
-#### AssignmentOperator
-```
-enum AssignmentOperator {
-  "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "|=" | "^=" | "&="
-}
-```
-
-#### IdentifierOperator
-```
-struct Identifier <: Node, Expression {
-  type: "Identifier",
-  name: String
-}
-```
-
-#### Literal
-```
-struct Literal {
-  type: "Literal",
-  value: String | Boolean | Number | None
-}
-```
-
-#### LogicalOperator
-```
-struct LogicalOperator {
-  type: "LogicalOperator",
-  value: "&&" | "||"
-}
-```
-
-#### Property
-```
-struct Property <: Node {
-  type: "Property",
-  key: String,
-  value: Expression,
-  kind: "init" | "get" | "set"
-}
-```
-
-#### UnaryOperator
-
-```
-struct UnaryOperator <: Node {
-	type: "UnaryOperator",
-	value: "+" | "-" | "!" | "~" | "typeof"
-}
-```
+<string>    ::= '<charactoers>'
+            | ''
+<characters>    ::= <character>
+                | <character> <characters>
 
 
-
-#### BinaryOperator
-
+<number>    ::= <integer>
+<integer>   ::= <decimal digit>
+            | <decimal digit> <integer>
+<decimal digit>     ::= 0|1|2|3|4|5|6|7|8|9
 ```
-struct BinaryOperator <: Node {
-	type: "BinaryOperator",
-	value: "+" | "-" | "*" | "/" | "%" | "&" | "|" | "^" | "==" | "!=" | ">" | ">=" | "<" | "<=" | "<<" | ">>"
-}
-```
-
-
