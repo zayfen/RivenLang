@@ -25,6 +25,5 @@ pub fn test_parse_expr_list() {
   let code = "\"name\", 1+2, 3*4+name, call(name, 1+2)";
   let mut parser = Parser::new(code);
   let expr_list = parse_expression_list(&mut parser);
-  dbg!(&expr_list);
   assert_eq!(expr_list.0.len(), 3);
 }

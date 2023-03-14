@@ -227,8 +227,6 @@ impl<'a> CodeGenerator for CCodeGenManager<'a> {
 
     if let Some(rests_stmts) = &stmt_list.1 {
       self.visit_stmt_list(rests_stmts);
-    } else {
-      dbg!(stmt_list);
     }
   }
 

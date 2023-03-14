@@ -17,7 +17,7 @@ pub fn parse_arithmetic_expr(parser: &mut Parser) -> ArithmeticExpr {
   let term = parse_term(parser);
   let token = parser.get_token();
 
-  println!("in arithmetic expr: {:?}", token);
+  // println!("in arithmetic expr: {:?}", token);
 
   if !(token.is_plus() || token.is_minus()) {
     return ArithmeticExpr::new(term, None, None);

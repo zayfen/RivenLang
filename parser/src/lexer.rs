@@ -265,7 +265,7 @@ where
     }
     let end_pos = self.get_pos();
 
-    println!("lex_identifier: {}", &name);
+    // println!("lex_identifier: {}", &name);
 
     if self.keywords.contains_key(&name) {
       Ok((start_pos, self.keywords[&name].clone(), end_pos))

@@ -11,8 +11,8 @@ pub struct Parser<'a> {
 
 fn advance_token(lex: &mut Lexer<LineContinationHandler<NewlineHandler<Chars>>>) -> Token {
   let result: Option<LexResult> = lex.next();
-  println!("Option<LexResult>: {:?}", result);
-  println!("next_token <<<<<<<<<<<<<<<<<");
+  // println!("Option<LexResult>: {:?}", result);
+  // println!("next_token <<<<<<<<<<<<<<<<<");
 
   if result.is_none() {
     return Token::None;
