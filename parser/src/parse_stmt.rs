@@ -1,6 +1,11 @@
 use crate::{parser::Parser, ast::{Statement, StatementValue}, parse_if_stmt::parse_if_stmt, parse_function_stmt::parse_function_stmt, parse_return_statement::parse_return_stmt, parse_assign_statement::parse_assign_stmt, parse_call_expr::parse_call_expr, token::Token};
 
+pub fn match_parse_stmt(parser: &mut Parser) -> bool {
+  let token = parser.get_token();
+  let next_token = parser.peek_token();
 
+  return token.is_keyword_if() || token.is_keyword_function() || token.is_keyword_return() || (token.is_id() && (next_token.is_eq() || next_token.is_lpar()))
+}
 
 pub fn parse_stmt(parser: &mut Parser) -> Statement {
     // assign stmt:   id = 
@@ -8,6 +13,10 @@ pub fn parse_stmt(parser: &mut Parser) -> Statement {
     // return stmt: return 
     // function stmt: function 
     // if stmt: if (
+    if !match_parse_stmt(parser) {
+      panic!("parse_stmt error, dont match statement token");
+    }
+
     let token = parser.get_token();
     let next_token = parser.peek_token();
 

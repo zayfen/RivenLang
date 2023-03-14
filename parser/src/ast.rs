@@ -164,10 +164,10 @@ impl Display for ArithmeticExpr {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct CallExpr(pub Identifier, pub Vec<Identifier>);
+pub struct CallExpr(pub Identifier, pub ExpressionList);
 
 impl CallExpr {
-  pub fn new(fn_name: Identifier, args: Vec<Identifier>) -> Self {
+  pub fn new(fn_name: Identifier, args: ExpressionList) -> Self {
     CallExpr(fn_name, args)
   }
 }
@@ -199,6 +199,9 @@ impl From<ExpressionValue> for Expression {
     Expression(value)
   }
 }
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ExpressionList(pub Vec<Expression>);
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct AssignStmt(pub Identifier, pub Expression);

@@ -1,4 +1,5 @@
-use crate::ast::{CallExpr, Identifier};
+use crate::ast::{CallExpr, Identifier, Expression, ExpressionList};
+use crate::parse_expression_list::parse_expression_list;
 use crate::parser::Parser;
 use crate::token::Token;
 
@@ -22,19 +23,8 @@ pub fn parse_call_expr(parser: &mut Parser) -> CallExpr {
   parser.advance_token();
   parser.advance_token();
 
-  let mut args: Vec<Identifier> = vec![];
-
-  let mut token = parser.get_token();
-  while token.is_id() {
-    if let Token::Id { name } = token {
-      args.push(Identifier::from(name.as_str()));
-    }
-    // ,
-    token = parser.advance_token();
-    if token.is_comma() {
-      token = parser.advance_token();
-    }
-  }
+  // now cursor point to expression list
+  let args: ExpressionList = parse_expression_list(parser);
 
   // should be right parent
   parser.eat_token(Token::RPar);

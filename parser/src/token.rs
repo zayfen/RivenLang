@@ -172,6 +172,10 @@ impl Token {
     matches!(self, Token::Function)
   }
 
+  pub fn is_eof(&self) -> bool {
+    matches!(self, Token::EndOfFile)
+  }
+
 }
 
 impl fmt::Display for Token {

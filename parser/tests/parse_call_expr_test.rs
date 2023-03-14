@@ -6,7 +6,7 @@ mod parser_test {
 
   #[test]
   fn test_parse_call_expr() {
-    let mut parser = Parser::new("fn(id, name)");
+    let mut parser = Parser::new("fn(id, 1+2, foo(\"name\"))");
     let call_expr = parse_call_expr(&mut parser);
     assert_eq!(
       format!("{:?}", call_expr),

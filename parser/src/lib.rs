@@ -33,6 +33,7 @@ pub mod parse_term;
 pub mod parse_arithmetic_expr;
 pub mod parse_call_expr;
 pub mod parse_expression;
+pub mod parse_expression_list;
 pub mod parse_assign_statement;
 pub mod parse_return_statement;
 pub mod parse_if_stmt;

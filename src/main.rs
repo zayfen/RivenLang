@@ -6,14 +6,18 @@ use codegen::codegen::{CCodeGenManager, CodeGenerator, Emitter};
 fn main() {
   let mut p = Parser::new("program {
     function fib(n) {
-      printf(n);
+      printf(\"%l\", n);
       nn = n-1;
       if (nn) {
         return fib(nn);
       }
     }
-    n = 10;
-    fib(n);
+
+    function main() {
+      n = 10;
+      fib(n);
+      return 0;
+    }
   }");
 
   let program = parse_program(&mut p);

@@ -77,10 +77,7 @@ impl<'a> CCodeGenManager<'a> {
   pub fn new(emitter: &'a mut Emitter) -> Self {
     emitter.push_header("#include<stdio.h>");
     emitter.push_header("#include<stdlib.h>");
-    emitter.push_header("int main(void) {");
 
-    emitter.push_tail("return 0;");
-    emitter.push_tail("}");
     CCodeGenManager { emitter }
   }
 }
@@ -136,9 +133,9 @@ impl<'a> CodeGenerator for CCodeGenManager<'a> {
   fn visit_call_expr(&mut self, call_expr: &CallExpr) {
     self.visit_identifier(&call_expr.0);
     self.emitter.emmit("(");
-    let args = &call_expr.1;
+    let args = &call_expr.1.0;
     args.iter().enumerate().for_each(|(idx, id)| {
-      self.visit_identifier(id);
+      self.visit_expr(id);
       // for last identifier, dont emmit ","
       if idx < (args.len() - 1) {
         self.emitter.emmit(",");

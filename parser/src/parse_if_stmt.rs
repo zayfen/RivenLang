@@ -2,7 +2,7 @@ use crate::{
   ast::{IfStmt, StmtList},
   parse_expression::parse_expression,
   parse_stmt_list::parse_stmt_list,
-  parser::Parser,
+  parser::Parser, token::Token,
 };
 
 pub fn match_if_stmt(parser: &mut Parser) -> bool {
@@ -44,6 +44,7 @@ pub fn parse_if_stmt(parser: &mut Parser) -> IfStmt {
     panic!("parse if statement error: missing rbrace {}", "}")
   }
 
+  parser.eat_token(Token::RBrace);
   IfStmt::new(expr, stmt_list)
 }
 
