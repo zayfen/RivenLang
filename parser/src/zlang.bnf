@@ -13,13 +13,25 @@
 
 <function-statement>  ::= function <identifier> ( <identifier-list> ) { <statement-list> }
 
-<if-statement>  ::= if (<expression>) { <statement-list> }
+<if-statement>  ::= if (<logic-expression>) { <statement-list> }
 
 <return-statement>  ::= return <expression> ;
 
 <assign-statement>     ::= <identifier> = <expression> ;
 
 <call-statement>    ::= <call-expression> ;
+
+<logic-expression> ::= <compare-expression>
+                    |  not (<logic-expression>)
+                    |  and (<logic-expression> , <logic-expression>)
+                    |  or (<logic-expression> , <logic-expression>)
+
+
+
+<compare-expression>   ::= <expression>
+                      | <expression> = <expression>
+                      | <expression> > <expression>
+                      | <expression> < <expression>  
 
 <expression-list>   ::= <expression>
                       | <expresison> , <expression-list>

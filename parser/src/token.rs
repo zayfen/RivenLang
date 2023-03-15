@@ -48,6 +48,9 @@ pub enum Token {
   Byte {
     value: u8,
   },
+  Not,
+  And,
+  Or,
   Newline,
   EndOfFile,
   For,
@@ -176,6 +179,25 @@ impl Token {
     matches!(self, Token::EndOfFile)
   }
 
+  pub fn is_not(&self) -> bool {
+    matches!(self, Token::Not)
+  }
+
+  pub fn is_and(&self) -> bool {
+    matches!(self, Token::And)
+  }
+
+  pub fn is_or(&self) -> bool {
+    matches!(self, Token::Or)
+  }
+
+  pub fn is_gt(&self) -> bool {
+    matches!(self, Token::Greater)
+  }
+
+  pub fn is_lt(&self) -> bool {
+    matches!(self, Token::Less)
+  }
 }
 
 impl fmt::Display for Token {
@@ -238,6 +260,9 @@ impl fmt::Display for Token {
       Comma => f.write_str(","),
       Function => f.write_str("FUNCTION"),
       Program => f.write_str("MAIN"),
+      Not => f.write_str("!"),
+      And => f.write_str("&&"),
+      Or => f.write_str("||")
     }
   }
 }
@@ -298,6 +323,9 @@ pub fn get_token_kind(token: Token) -> String {
     Comma => "Comma".to_owned(),
     Function => "FUNCTION".to_owned(),
     Program => "MAIN".to_owned(),
+    Not => "Not".to_owned(),
+    And => "And".to_owned(),
+    Or => "Or".to_owned()
   }
 }
 

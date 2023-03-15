@@ -42,6 +42,8 @@ pub mod parse_stmt;
 pub mod parse_stmt_list;
 pub mod parse_program;
 
+pub mod parse_logic_expr;
+
 // pub mod parse_literal;
 // pub mod parse_primary;
 // pub mod parse_term;

@@ -203,6 +203,56 @@ impl From<ExpressionValue> for Expression {
 #[derive(Debug, Clone, PartialEq)]
 pub struct ExpressionList(pub Vec<Expression>);
 
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum CompareOp {
+  Eq,  // equal
+  Gt, // greater than
+  Lt,  // less than
+}
+
+impl Display for CompareOp {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    match self {
+      CompareOp::Eq => write!(f, "{}", " == "),
+      CompareOp::Gt => write!(f, "{}", " > "),
+      CompareOp::Lt => write!(f, "{}", " < "),
+    }
+  }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct CompareExpr(pub Expression, pub Option<CompareOp>, pub Option<Expression>);
+impl CompareExpr {
+  pub fn new(left: Expression, op: Option<CompareOp>, right: Option<Expression>) -> Self {
+    CompareExpr(left, op, right)
+  }
+}
+
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum LogicOp {
+  Bool, // keep original value, dont transform
+  And,
+  Or,
+  Not,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct LogicExpr(pub LogicOp, pub Option<CompareExpr>, pub Option<Box<LogicExpr>>, pub Option<Box<LogicExpr>>);
+
+impl LogicExpr {
+  pub fn new(op: LogicOp, compare_expr: Option<CompareExpr>, left_logic_expr: Option<Box<LogicExpr>>, right_logic_expr: Option<Box<LogicExpr>>) -> Self {
+    LogicExpr(op, compare_expr, left_logic_expr, right_logic_expr)
+  }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum LogicListOp {
+  And,
+  Not  
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct AssignStmt(pub Identifier, pub Expression);
 

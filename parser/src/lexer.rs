@@ -45,6 +45,9 @@ pub fn get_keywords() -> HashMap<String, Token> {
   keywords.insert(String::from("continue"), Token::Continue);
   keywords.insert(String::from("function"), Token::Function);
   keywords.insert(String::from("program"), Token::Program);
+  keywords.insert(String::from("not"), Token::Not);
+  keywords.insert(String::from("and"), Token::And);
+  keywords.insert(String::from("or"), Token::Or);
 
   keywords
 }
