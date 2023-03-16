@@ -1,11 +1,49 @@
-# zlang
-a language implemented in rust
+# RivenLang
+A simple language for children implemented in rust.
+We can teach children basic math knowledge and basic coding knowledge in RivenLang.
 
-Learning resource: [TeenytinyCompiler](https://austinhenley.com/blog/teenytinycompiler2.html)
+## example
+> fib.riven
+``` rust
+// Code example
+
+program {
+    fn fib(n) {
+      if (n = 0) {
+        return 0;
+      }
+
+      if (n = 1) {
+        return 1;
+      }
+
+      // calculate fib(n-1) and fib(n-2)
+      fib_n_1 = fib(n-1);
+      fib_n_2 = fib(n-2);
+      fib_n = fib_n_1 + fib_n_2;
+      printf("fib(%d): %d\n", n, fib_n);
+      return fib_n;
+    }
+
+    fn main() {
+      fib(10);
+      return 0;
+    }
+  }
+
+```
+
+How to compile?
+`riven <your source file path>`, e.g.: `riven fib.riven`
+
+If build successfully, there is a file named `b.out` in the directory source file stays, 
+Now, we can run `b.out` in terminal just like the way your run `ls cd`. 
 
 ## grammar
 
-```
+``` text
+
+
 <program>   ::= MAIN { <statement-list> }
 
 <statement-list>    ::= <empty>
@@ -17,15 +55,27 @@ Learning resource: [TeenytinyCompiler](https://austinhenley.com/blog/teenytinyco
                     | <function-statement>
                     | <if-statement>
 
-<function-statement>  ::= function <identifier> ( <identifier-list> ) { <statement-list> }
+<function-statement>  ::= fn <identifier> ( <identifier-list> ) { <statement-list> }
 
-<if-statement>  ::= if (<expression>) { <statement-list> }
+<if-statement>  ::= if (<logic-expression>) { <statement-list> }
 
 <return-statement>  ::= return <expression> ;
 
 <assign-statement>     ::= <identifier> = <expression> ;
 
 <call-statement>    ::= <call-expression> ;
+
+<logic-expression> ::= <compare-expression>
+                    |  not (<logic-expression>)
+                    |  and (<logic-expression> , <logic-expression>)
+                    |  or (<logic-expression> , <logic-expression>)
+
+
+
+<compare-expression>   ::= <expression>
+                      | <expression> = <expression>
+                      | <expression> > <expression>
+                      | <expression> < <expression>  
 
 <expression-list>   ::= <expression>
                       | <expresison> , <expression-list>
@@ -68,4 +118,6 @@ Learning resource: [TeenytinyCompiler](https://austinhenley.com/blog/teenytinyco
 <integer>   ::= <decimal digit>
             | <decimal digit> <integer>
 <decimal digit>     ::= 0|1|2|3|4|5|6|7|8|9
+
 ```
+

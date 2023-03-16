@@ -30,8 +30,15 @@ impl<'a> Parser<'a> {
     let lch = LineContinationHandler::new(nlh);
     let mut lex = Lexer::new(lch);
 
-    let next_token = advance_token(&mut lex);
-    let next_next_token = advance_token(&mut lex);
+    let mut next_token = advance_token(&mut lex);
+    while next_token.is_newline() || next_token.is_comment() {
+      next_token = advance_token(&mut lex);
+    }
+    
+    let mut next_next_token = advance_token(&mut lex);
+    while next_next_token.is_newline() || next_next_token.is_comment() {
+      next_next_token = advance_token(&mut lex);
+    }
 
     Parser {
       lex,
@@ -43,7 +50,14 @@ impl<'a> Parser<'a> {
   // get next token and advances the current token
   pub fn advance_token(&mut self) -> Token {
     self.next_token = self.nnext_token.clone();
+    while self.next_token.is_newline() || self.next_token.is_comment() {
+      self.next_token = advance_token(&mut self.lex);
+    }
+
     self.nnext_token = advance_token(&mut self.lex);
+    while self.nnext_token.is_newline() || self.nnext_token.is_comment() {
+      self.nnext_token = advance_token(&mut self.lex);
+    }
 
     self.get_token()
   }

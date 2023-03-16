@@ -198,6 +198,16 @@ impl Token {
   pub fn is_lt(&self) -> bool {
     matches!(self, Token::Less)
   }
+
+  pub fn is_newline(&self) -> bool {
+    matches!(self, Token::Newline)
+  }
+
+  pub fn is_comment(&self) -> bool {
+    matches!(self, Token::Comment { value: _ })
+  }
+
+
 }
 
 impl fmt::Display for Token {
