@@ -1,7 +1,7 @@
 use parser::ast::{
-  ArithmeticExpr, AssignStmt, CallExpr, Expression, ExpressionValue, Factor, FactorValue,
-  FunctionStmt, Identifier, IfStmt, Primary, PrimaryValue, Program, ReturnStmt, Statement,
-  StmtList, Term, StatementValue,
+  ArithmeticExpr, AssignStmt, CallExpr, CompareExpr, CompareOp, Expression, ExpressionValue,
+  Factor, FactorValue, FunctionStmt, Identifier, IfStmt, LogicExpr, LogicOp, Primary, PrimaryValue,
+  Program, ReturnStmt, Statement, StatementValue, StmtList, Term,
 };
 
 /// code generator
@@ -60,6 +60,8 @@ pub trait CodeGenerator {
   fn visit_call_expr(&mut self, call_expr: &CallExpr);
   fn visit_call_stmt(&mut self, call_expr: &CallExpr);
   fn visit_expr(&mut self, expr: &Expression);
+  fn visit_compare_expr(&mut self, compare_expr: &CompareExpr);
+  fn visit_logic_expr(&mut self, logic_expr: &LogicExpr);
   fn visit_assign_stmt(&mut self, stmt: &AssignStmt);
   fn visit_return_stmt(&mut self, stmt: &ReturnStmt);
   fn visit_if_stmt(&mut self, stmt: &IfStmt);
@@ -133,7 +135,7 @@ impl<'a> CodeGenerator for CCodeGenManager<'a> {
   fn visit_call_expr(&mut self, call_expr: &CallExpr) {
     self.visit_identifier(&call_expr.0);
     self.emitter.emmit("(");
-    let args = &call_expr.1.0;
+    let args = &call_expr.1 .0;
     args.iter().enumerate().for_each(|(idx, id)| {
       self.visit_expr(id);
       // for last identifier, dont emmit ","
@@ -158,6 +160,71 @@ impl<'a> CodeGenerator for CCodeGenManager<'a> {
     }
   }
 
+  fn visit_compare_expr(&mut self, compare_expr: &CompareExpr) {
+    self.visit_expr(&compare_expr.0);
+    match compare_expr.1 {
+      Some(CompareOp::Eq) => self.emitter.emmit("=="),
+      Some(CompareOp::Gt) => self.emitter.emmit(">"),
+      Some(CompareOp::Lt) => self.emitter.emmit("<"),
+      None => (),
+    };
+
+    if let Some(expr) = &compare_expr.2 {
+      self.visit_expr(expr);
+    }
+  }
+
+  fn visit_logic_expr(&mut self, logic_expr: &LogicExpr) {
+    match logic_expr.0 {
+      LogicOp::Bool => {
+        if let Some(compare_expr) = &logic_expr.1 {
+          self.visit_compare_expr(compare_expr);
+        }
+      }
+      LogicOp::And => {
+        self.emitter.emmit("(");
+        if let Some(expr) = &logic_expr.2 {
+          self.visit_logic_expr(expr);
+        }
+
+        if logic_expr.2.is_some() && logic_expr.3.is_some() {
+          self.emitter.emmit("&&");
+        }
+
+        if let Some(expr) = &logic_expr.3 {
+          self.visit_logic_expr(expr);
+        }
+
+        self.emitter.emmit(")");
+      }
+
+      LogicOp::Or => {
+        self.emitter.emmit("(");
+        if let Some(expr) = &logic_expr.2 {
+          self.visit_logic_expr(expr);
+        }
+
+        if logic_expr.2.is_some() && logic_expr.3.is_some() {
+          self.emitter.emmit("||");
+        }
+
+        if let Some(expr) = &logic_expr.3 {
+          self.visit_logic_expr(expr);
+        }
+
+        self.emitter.emmit(")");
+      }
+      LogicOp::Not => {
+        if logic_expr.2.is_some() {
+          self.emitter.emmit("!");
+          if let Some(expr) = &logic_expr.2 {
+            self.visit_logic_expr(expr);
+          }
+        }
+      }
+    }
+  }
+
   fn visit_assign_stmt(&mut self, stmt: &AssignStmt) {
     // TODO: check variable type here
     // assume it's int type
@@ -177,7 +244,7 @@ impl<'a> CodeGenerator for CCodeGenManager<'a> {
 
   fn visit_if_stmt(&mut self, stmt: &IfStmt) {
     self.emitter.emmit("if (");
-    self.visit_expr(&stmt.0);
+    self.visit_logic_expr(&stmt.0);
     self.emitter.emmit(") {");
 
     if let Some(stmt_list) = &stmt.1 {
@@ -187,19 +254,17 @@ impl<'a> CodeGenerator for CCodeGenManager<'a> {
     self.emitter.emmit("}");
   }
 
-
   fn visit_function_stmt(&mut self, stmt: &FunctionStmt) {
     // TODO: check function return type, assume int type here
     self.emitter.emmit("int");
     self.visit_identifier(&stmt.0);
     self.emitter.emmit("(");
     stmt.1.iter().enumerate().for_each(|(idx, id)| {
-
       // FIXME: assume int type
       self.emitter.emmit("int");
 
       self.visit_identifier(id);
-      if idx < (stmt.1.len()-1) {
+      if idx < (stmt.1.len() - 1) {
         self.emitter.emmit(",");
       }
     });
@@ -216,7 +281,7 @@ impl<'a> CodeGenerator for CCodeGenManager<'a> {
       StatementValue::CallStmt(stmt) => self.visit_call_stmt(stmt),
       StatementValue::FunctionStmt(stmt) => self.visit_function_stmt(stmt),
       StatementValue::IfStmt(stmt) => self.visit_if_stmt(stmt),
-      StatementValue::ReturnStmt(stmt) => self.visit_return_stmt(stmt)
+      StatementValue::ReturnStmt(stmt) => self.visit_return_stmt(stmt),
     }
   }
 

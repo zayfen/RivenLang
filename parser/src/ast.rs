@@ -203,12 +203,11 @@ impl From<ExpressionValue> for Expression {
 #[derive(Debug, Clone, PartialEq)]
 pub struct ExpressionList(pub Vec<Expression>);
 
-
 #[derive(Debug, Clone, PartialEq)]
 pub enum CompareOp {
-  Eq,  // equal
+  Eq, // equal
   Gt, // greater than
-  Lt,  // less than
+  Lt, // less than
 }
 
 impl Display for CompareOp {
@@ -222,13 +221,16 @@ impl Display for CompareOp {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct CompareExpr(pub Expression, pub Option<CompareOp>, pub Option<Expression>);
+pub struct CompareExpr(
+  pub Expression,
+  pub Option<CompareOp>,
+  pub Option<Expression>,
+);
 impl CompareExpr {
   pub fn new(left: Expression, op: Option<CompareOp>, right: Option<Expression>) -> Self {
     CompareExpr(left, op, right)
   }
 }
-
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum LogicOp {
@@ -239,10 +241,20 @@ pub enum LogicOp {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct LogicExpr(pub LogicOp, pub Option<CompareExpr>, pub Option<Box<LogicExpr>>, pub Option<Box<LogicExpr>>);
+pub struct LogicExpr(
+  pub LogicOp,
+  pub Option<CompareExpr>,
+  pub Option<Box<LogicExpr>>,
+  pub Option<Box<LogicExpr>>,
+);
 
 impl LogicExpr {
-  pub fn new(op: LogicOp, compare_expr: Option<CompareExpr>, left_logic_expr: Option<Box<LogicExpr>>, right_logic_expr: Option<Box<LogicExpr>>) -> Self {
+  pub fn new(
+    op: LogicOp,
+    compare_expr: Option<CompareExpr>,
+    left_logic_expr: Option<Box<LogicExpr>>,
+    right_logic_expr: Option<Box<LogicExpr>>,
+  ) -> Self {
     LogicExpr(op, compare_expr, left_logic_expr, right_logic_expr)
   }
 }
@@ -250,7 +262,7 @@ impl LogicExpr {
 #[derive(Debug, Clone, PartialEq)]
 pub enum LogicListOp {
   And,
-  Not  
+  Not,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -272,16 +284,20 @@ impl ReturnStmt {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct IfStmt(pub Expression, pub Option<Box<StmtList>>);
+pub struct IfStmt(pub LogicExpr, pub Option<Box<StmtList>>);
 
 impl IfStmt {
-  pub fn new(expr: Expression, stmt_list: StmtList) -> Self {
+  pub fn new(expr: LogicExpr, stmt_list: StmtList) -> Self {
     IfStmt(expr, Some(Box::new(stmt_list)))
   }
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct FunctionStmt(pub Identifier, pub Vec<Identifier>, pub Option<Box<StmtList>>);
+pub struct FunctionStmt(
+  pub Identifier,
+  pub Vec<Identifier>,
+  pub Option<Box<StmtList>>,
+);
 
 impl FunctionStmt {
   pub fn new(id: Identifier, params: Vec<Identifier>, stmt_list: StmtList) -> Self {

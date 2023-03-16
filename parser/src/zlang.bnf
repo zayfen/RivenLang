@@ -11,7 +11,7 @@
                     | <function-statement>
                     | <if-statement>
 
-<function-statement>  ::= function <identifier> ( <identifier-list> ) { <statement-list> }
+<function-statement>  ::= fn <identifier> ( <identifier-list> ) { <statement-list> }
 
 <if-statement>  ::= if (<logic-expression>) { <statement-list> }
 

@@ -21,7 +21,7 @@ pub fn parse_stmt_list(parser: &mut Parser) -> StmtList {
 
 #[test]
 pub fn test_parse_stmt_list() {
-  let code = "function foo() {} name = value;";
+  let code = "fn foo() {} name = value;";
   let mut parser = Parser::new(code);
   let stmt_list = parse_stmt_list(&mut parser);
 }

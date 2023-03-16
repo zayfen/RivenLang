@@ -52,7 +52,7 @@ pub fn parse_function_stmt(parser: &mut Parser) -> FunctionStmt {
 
 #[test]
 fn test_function_stmt() {
-  let code = "function foo (name, age) { name = \"zayfen\"; age = 18; if (1+2) { nage_age = name * age; }}";
+  let code = "fn foo (name, age) { name = \"zayfen\"; age = 18; if (1+2) { nage_age = name * age; }}";
   let mut parser = Parser::new(code);
   let fn_stmt = parse_function_stmt(&mut parser);
   println!("{:?}", fn_stmt);

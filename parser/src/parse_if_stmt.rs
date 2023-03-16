@@ -1,8 +1,9 @@
 use crate::{
   ast::{IfStmt, StmtList},
-  parse_expression::parse_expression,
+  parse_logic_expr::parse_logic_expr,
   parse_stmt_list::parse_stmt_list,
-  parser::Parser, token::Token,
+  parser::Parser,
+  token::Token,
 };
 
 pub fn match_if_stmt(parser: &mut Parser) -> bool {
@@ -22,7 +23,7 @@ pub fn parse_if_stmt(parser: &mut Parser) -> IfStmt {
   }
 
   parser.advance_token();
-  let expr = parse_expression(parser);
+  let expr = parse_logic_expr(parser);
 
   // now cursor point to )
   if !parser.get_token().is_rpar() {
@@ -50,13 +51,13 @@ pub fn parse_if_stmt(parser: &mut Parser) -> IfStmt {
 
 #[test]
 fn test_if_stmt() {
-  let code = "if (1 + 2) { name = \"zayfen\"; foo(name); function foo2 (nage) {a = 1+2; b = 2+4; print(a,b);}}";
+  let code = "if (not(1 + 2 > 0)) { name = \"zayfen\"; foo(name); fn foo2 (nage) {a = 1+2; b = 2+4; print(a,b);}}";
   let mut parser = Parser::new(code);
   let if_stmt = parse_if_stmt(&mut parser);
   println!("{:?}", if_stmt);
 
-  let expr_code = "1 + 2";
+  let expr_code = "not(1 + 2 > 0)";
   let mut parser2 = Parser::new(expr_code);
-  let expr = parse_expression(&mut parser2);
+  let expr = parse_logic_expr(&mut parser2);
   assert_eq!(if_stmt.0, expr);
 }

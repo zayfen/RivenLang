@@ -1,4 +1,4 @@
-use crate::ast::{CallExpr, Identifier, Expression, ExpressionList};
+use crate::ast::{CallExpr, ExpressionList, Identifier};
 use crate::parse_expression_list::parse_expression_list;
 use crate::parser::Parser;
 use crate::token::Token;

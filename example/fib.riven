@@ -1,19 +1,21 @@
-
-
-// this code print number from 10 to 1 eache line.
-
 program {
-    function fib(n) {
-      printf("%d\n", n);
-      nn = n-1;
-      if (nn) {
-        return fib(nn);
+    fn fib(n) {
+      if (n = 0) {
+        return 0;
       }
+
+      if (n = 1) {
+        return 1;
+      }
+      fib_n_1 = fib(n-1);
+      fib_n_2 = fib(n-2);
+      fib_n = fib_n_1 + fib_n_2;
+      printf("fib(%d): %d\n", n, fib_n);
+      return fib_n;
     }
 
-    function main() {
-      n = 10;
-      fib(n);
+    fn main() {
+      fib(10);
       return 0;
     }
   }
