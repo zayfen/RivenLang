@@ -2,7 +2,12 @@
 A simple language for children implemented in rust.
 We can teach children basic math knowledge and basic coding knowledge in RivenLang.
 
-## example
+ Why `RivenLang`? 
+ Because my cute daughter named "芮文" in Chinese, its pronunciation very like the word `riven` in English. So, as a matter of course, I named this programming language `riven`.
+ 
+ 
+
+ ## Example
 > fib.riven
 ``` rust
 // Code example
