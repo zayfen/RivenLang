@@ -87,7 +87,6 @@ Now, we can run `b.out` in terminal just like the way your run `ls cd`.
 
 // identifier (  <=> identifier [*/+-]
 <expression>    ::= <arithmetic-expression>
-                  | <call-expression>
 
 <call-expression>       ::= <identifier> ()
                           | <identifier> ( <expression-list> )
@@ -100,8 +99,7 @@ Now, we can run `b.out` in terminal just like the way your run `ls cd`.
             | <factor> * <term>
             | <factor> / <term>
 
-// "hello", 123, userName
-<factor>    ::= <primary> | <identifier>
+<factor>    ::= <primary> | <identifier> | <call-expression>
 
 // "hello", 123
 <primary>   ::= <string> | <number>

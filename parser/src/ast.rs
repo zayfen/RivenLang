@@ -44,7 +44,7 @@ pub enum PrimaryValue {
 
 impl PrimaryValue {
   pub const fn is_string(&self) -> bool {
-    matches!(*self, PrimaryValue::String(_))
+    matches!(self, PrimaryValue::String(_))
   }
 
   pub const fn is_number(&self) -> bool {
@@ -74,15 +74,20 @@ impl From<PrimaryValue> for Primary {
 pub enum FactorValue {
   Primary(Primary),
   Identifier(Identifier),
+  CallExpr(CallExpr),
 }
 
 impl FactorValue {
   pub const fn is_primary(&self) -> bool {
-    matches!(*self, FactorValue::Primary(_))
+    matches!(self, FactorValue::Primary(_))
   }
 
   pub const fn is_identifier(&self) -> bool {
-    matches!(*self, FactorValue::Identifier(_))
+    matches!(self, FactorValue::Identifier(_))
+  }
+
+  pub const fn is_call_expr(&self) -> bool {
+    matches!(self, FactorValue::CallExpr(_))
   }
 }
 
@@ -174,15 +179,10 @@ impl CallExpr {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum ExpressionValue {
-  CallExpr(CallExpr),
   ArithmeticExpr(ArithmeticExpr),
 }
 
 impl ExpressionValue {
-  pub fn is_call_expr(&self) -> bool {
-    matches!(self, ExpressionValue::CallExpr(CallExpr(id, args)))
-  }
-
   pub fn is_arithmetic_expr(&self) -> bool {
     matches!(
       self,

@@ -101,6 +101,7 @@ impl<'a> CodeGenerator for CCodeGenManager<'a> {
     match factor {
       Factor(FactorValue::Primary(primary)) => self.visit_primary(primary),
       Factor(FactorValue::Identifier(identifier)) => self.visit_identifier(identifier),
+      Factor(FactorValue::CallExpr(call_expr)) => self.visit_call_expr(call_expr),
     }
   }
 
@@ -155,7 +156,6 @@ impl<'a> CodeGenerator for CCodeGenManager<'a> {
   fn visit_expr(&mut self, expr: &Expression) {
     let expr_value = &expr.0;
     match expr_value {
-      ExpressionValue::CallExpr(call_expr) => self.visit_call_expr(call_expr),
       ExpressionValue::ArithmeticExpr(arith_expr) => self.visit_arithmetic_expr(arith_expr),
     }
   }

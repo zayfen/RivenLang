@@ -4,22 +4,18 @@ use crate::parse_call_expr::{match_call_expr, parse_call_expr};
 use crate::parser::Parser;
 
 pub fn match_expression(parser: &mut Parser) -> bool {
-  let token = parser.get_token();
-  let next_token = parser.peek_token();
-
-  return match_call_expr(token.clone(), next_token) || match_arithmetic_expr(token)
+  match_arithmetic_expr(parser)
 }
 
 pub fn parse_expression(parser: &mut Parser) -> Expression {
+  // let token = parser.get_token();
+  // let next_token = parser.peek_token();
 
-  let token = parser.get_token();
-  let next_token = parser.peek_token();
+  // if match_call_expr(token.clone(), next_token) {
+  //   return Expression::from(ExpressionValue::CallExpr(parse_call_expr(parser)));
+  // }
 
-  if match_call_expr(token.clone(), next_token) {
-    return Expression::from(ExpressionValue::CallExpr(parse_call_expr(parser)));
-  } 
-  
-  if match_arithmetic_expr(token) {
+  if match_arithmetic_expr(parser) {
     return Expression::from(ExpressionValue::ArithmeticExpr(parse_arithmetic_expr(
       parser,
     )));

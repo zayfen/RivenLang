@@ -3,14 +3,14 @@ use crate::parse_term::{match_term, parse_term};
 use crate::parser::Parser;
 use crate::token::Token;
 
-pub(crate) fn match_arithmetic_expr(token: Token) -> bool {
-  match_term(token)
+pub(crate) fn match_arithmetic_expr(parser: &mut Parser) -> bool {
+  match_term(parser)
 }
 
 pub fn parse_arithmetic_expr(parser: &mut Parser) -> ArithmeticExpr {
   let token = parser.get_token();
 
-  if !match_arithmetic_expr(token.clone()) {
+  if !match_arithmetic_expr(parser) {
     panic!("{:?} dont match arithmetic expr", &token);
   }
 

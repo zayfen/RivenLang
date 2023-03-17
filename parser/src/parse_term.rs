@@ -3,14 +3,14 @@ use crate::parse_factor::{match_factor, parse_factor};
 use crate::parser::Parser;
 use crate::token::Token;
 
-pub(crate) fn match_term(token: Token) -> bool {
+pub(crate) fn match_term(parser: &mut Parser) -> bool {
   // if token is identifier, then next token can't be (
-  match_factor(token)
+  match_factor(parser)
 }
 
 pub fn parse_term(parser: &mut Parser) -> Term {
   let token = parser.get_token();
-  if !match_term(token.clone()) {
+  if !match_term(parser) {
     panic!("{:?} dont match factor", &token);
   }
 
