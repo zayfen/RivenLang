@@ -18,7 +18,7 @@ program {
     }
 
     fn main() {
-      fib(10);
+      fib(5);
       return 0;
     }
   }

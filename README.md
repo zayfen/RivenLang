@@ -31,12 +31,39 @@ program {
     }
 
     fn main() {
-      fib(10);
+      fib(5);
       return 0;
     }
   }
 
 ```
+Output:
+> ❯ ./b.out
+> fib(2): 1
+> fib(2): 1
+> fib(3): 2
+> fib(2): 1
+> fib(2): 1
+> fib(2): 1
+> fib(3): 2
+> fib(2): 1
+> fib(4): 3
+> fib(2): 1
+> fib(2): 1
+> fib(3): 2
+> fib(2): 1
+> fib(2): 1
+> fib(3): 2
+> fib(2): 1
+> fib(2): 1
+> fib(2): 1
+> fib(3): 2
+> fib(2): 1
+> fib(4): 3
+> fib(2): 1
+> fib(2): 1
+> fib(3): 2
+> fib(5): 5
 
 How to compile?
 `riven <your source file path>`, e.g.: `riven fib.riven`
