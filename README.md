@@ -118,10 +118,22 @@ Now, we can run `b.out` in terminal just like the way your run `ls cd`.
                       | <expresison> , <expression-list>
 
 // identifier (  <=> identifier [*/+-]
-<expression>    ::= <arithmetic-expression>
+<expression>    ::= <component-arithmetic-expression>
 
 <call-expression>       ::= <identifier> ()
                           | <identifier> ( <expression-list> )
+
+<component-arithmetic-expression> ::= <component-term>
+                                    | <component-term> + <component-arithmetic-expression>
+                                    | <component-term> - <component-arithmetic-expression>
+
+<compoennt-term>  ::= <component-factor>
+                    | <component-factor> * <component-term>
+                    | <component-factor> / <component-term>
+
+// like factor
+<component-factor>  ::= <arithmetic-expression>
+                               | (<arithmetic-expression>) 
 
 <arithmetic-expression> ::= <term>
                         | <term> + <arithmetic-expression>
