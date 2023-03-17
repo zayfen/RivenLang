@@ -25,7 +25,7 @@ program {
       // calculate fib(n-1) and fib(n-2)
       fib_n_1 = fib(n-1);
       fib_n_2 = fib(n-2);
-      fib_n = fib_n_1 + fib_n_2;
+      fib_n = fib(n-1) + fib(n-2); // fib_n_1 + fib_n_2;
       printf("fib(%d): %d\n", n, fib_n);
       return fib_n;
     }
