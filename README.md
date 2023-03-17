@@ -37,33 +37,38 @@ program {
   }
 
 ```
+
 Output:
-> ❯ ./b.out
-> fib(2): 1
-> fib(2): 1
-> fib(3): 2
-> fib(2): 1
-> fib(2): 1
-> fib(2): 1
-> fib(3): 2
-> fib(2): 1
-> fib(4): 3
-> fib(2): 1
-> fib(2): 1
-> fib(3): 2
-> fib(2): 1
-> fib(2): 1
-> fib(3): 2
-> fib(2): 1
-> fib(2): 1
-> fib(2): 1
-> fib(3): 2
-> fib(2): 1
-> fib(4): 3
-> fib(2): 1
-> fib(2): 1
-> fib(3): 2
-> fib(5): 5
+
+``` text
+❯ ./b.out
+fib(2): 1
+fib(2): 1
+fib(3): 2
+fib(2): 1
+fib(2): 1
+fib(2): 1
+fib(3): 2
+fib(2): 1
+fib(4): 3
+fib(2): 1
+fib(2): 1
+fib(3): 2
+fib(2): 1
+fib(2): 1
+fib(3): 2
+fib(2): 1
+fib(2): 1
+fib(2): 1
+fib(3): 2
+fib(2): 1
+fib(4): 3
+fib(2): 1
+fib(2): 1
+fib(3): 2
+fib(5): 5
+
+```
 
 How to compile?
 `riven <your source file path>`, e.g.: `riven fib.riven`
