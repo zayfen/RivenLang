@@ -22,16 +22,13 @@ program {
         return 1;
       }
 
-      // calculate fib(n-1) and fib(n-2)
-      fib_n_1 = fib(n-1);
-      fib_n_2 = fib(n-2);
-      fib_n = fib(n-1) + fib(n-2); // fib_n_1 + fib_n_2;
+      fib_n = fib(n-1) + fib(n-2);
       printf("fib(%d): %d\n", n, fib_n);
       return fib_n;
     }
 
     fn main() {
-      fib(5);
+      fib((1+1) * 2);
       return 0;
     }
   }
@@ -43,32 +40,12 @@ Output:
 ``` text
 ❯ ./b.out
 fib(2): 1
-fib(2): 1
-fib(3): 2
-fib(2): 1
-fib(2): 1
-fib(2): 1
 fib(3): 2
 fib(2): 1
 fib(4): 3
-fib(2): 1
-fib(2): 1
-fib(3): 2
-fib(2): 1
-fib(2): 1
-fib(3): 2
-fib(2): 1
-fib(2): 1
-fib(2): 1
-fib(3): 2
-fib(2): 1
-fib(4): 3
-fib(2): 1
-fib(2): 1
-fib(3): 2
-fib(5): 5
 
 ```
+
 
 How to compile?
 `riven <your source file path>`, e.g.: `riven fib.riven`
