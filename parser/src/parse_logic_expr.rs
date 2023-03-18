@@ -96,7 +96,7 @@ fn test_parse_compare_expr() {
   let mut p = Parser::new("a > 1");
   let expr = parse_compare_expr(&mut p);
   dbg!(&expr);
-  assert_eq!(matches!(expr.0.0, ExpressionValue::ArithmeticExpr(_)), true);
+  assert_eq!(matches!(expr.0.0, ExpressionValue::ComponentArithmeticExpr(_)), true);
 }
 
 

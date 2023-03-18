@@ -28,6 +28,3 @@ pub fn parse_factor(parser: &mut Parser) -> Factor {
     _ => Factor::from(FactorValue::Primary(parse_primary(parser))),
   }
 }
-
-#[test]
-fn test_parse_factor() {}

@@ -133,7 +133,7 @@ Now, we can run `b.out` in terminal just like the way your run `ls cd`.
 
 // like factor
 <component-factor>  ::= <arithmetic-expression>
-                               | (<arithmetic-expression>) 
+                      | ( <component-factor> ) 
 
 <arithmetic-expression> ::= <term>
                         | <term> + <arithmetic-expression>
