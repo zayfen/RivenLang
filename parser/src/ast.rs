@@ -182,11 +182,10 @@ impl Display for ArithmeticExpr {
   }
 }
 
-
 #[derive(Debug, Clone, PartialEq)]
 pub enum ComponentFactorValue {
   ArithmeticExpr(ArithmeticExpr),
-  ComponentFactor(Option<Box<ComponentFactor>>)
+  ComponentFactor(Option<Box<ComponentFactor>>),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -201,7 +200,7 @@ impl From<ComponentFactorValue> for ComponentFactor {
   fn from(value: ComponentFactorValue) -> Self {
     match &value {
       ComponentFactorValue::ArithmeticExpr(_) => ComponentFactor(false, value),
-      ComponentFactorValue::ComponentFactor(_) => ComponentFactor(true, value)
+      ComponentFactorValue::ComponentFactor(_) => ComponentFactor(true, value),
     }
   }
 }
@@ -264,7 +263,7 @@ impl CallExpr {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum ExpressionValue {
-  ComponentArithmeticExpr(ComponentArithmeticExpr)
+  ComponentArithmeticExpr(ComponentArithmeticExpr),
 }
 
 impl ExpressionValue {

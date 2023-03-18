@@ -87,7 +87,7 @@ Now, we can run `b.out` in terminal just like the way your run `ls cd`.
                         | <statement> <statement-list>
 
 <statement>   ::=   <assign-statement>
-                    | <call-expression> ;
+                    | <call-statement>
                     | <return-statement>
                     | <function-statement>
                     | <if-statement>
@@ -119,6 +119,7 @@ Now, we can run `b.out` in terminal just like the way your run `ls cd`.
 
 // identifier (  <=> identifier [*/+-]
 <expression>    ::= <component-arithmetic-expression>
+
 
 <call-expression>       ::= <identifier> ()
                           | <identifier> ( <expression-list> )
