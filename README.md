@@ -58,7 +58,7 @@ Now, we can run `b.out` in terminal just like the way your run `ls cd`.
 ``` text
 
 
-<program>   ::= MAIN { <statement-list> }
+<program>   ::= program { <statement-list> }
 
 <statement-list>    ::= <empty>
                         | <statement> <statement-list>
@@ -123,10 +123,8 @@ Now, we can run `b.out` in terminal just like the way your run `ls cd`.
 
 <factor>    ::= <primary> | <identifier> | <call-expression>
 
-// "hello", 123
 <primary>   ::= <string> | <number>
 
-// userName, Age
 <identifier-list>       ::= <identifier>
                         | <identifier> , <identifier-list>
 
