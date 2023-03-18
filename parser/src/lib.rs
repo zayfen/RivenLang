@@ -44,6 +44,12 @@ pub mod parse_program;
 
 pub mod parse_logic_expr;
 
+pub mod parse_component_factor;
+
+pub mod parse_component_term;
+
+pub mod parse_component_arithmetic_expr;
+
 // pub mod parse_literal;
 // pub mod parse_primary;
 // pub mod parse_term;

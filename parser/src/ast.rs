@@ -3,6 +3,8 @@ use std::fmt::Display;
 use std::matches;
 use std::string::String;
 
+use crate::token::Token;
+
 // use crate::location::SourceLocation;
 
 // 所有的Node枚举
@@ -119,6 +121,18 @@ impl Display for BinOp {
   }
 }
 
+impl From<Token> for BinOp {
+  fn from(value: Token) -> Self {
+    match value {
+      Token::Star => BinOp::Time,
+      Token::Plus => BinOp::Add,
+      Token::Minus => BinOp::Min,
+      Token::Slash => BinOp::Div,
+      _ => panic!("BinOp can't get from token {:?}", value),
+    }
+  }
+}
+
 impl BinOp {
   pub fn is_time(&self) -> bool {
     matches!(*self, BinOp::Time)
@@ -169,6 +183,76 @@ impl Display for ArithmeticExpr {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub enum ComponentFactorValue {
+  ArithmeticExpr(ArithmeticExpr),
+  ComponentFactor(Option<Box<ComponentFactor>>),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ComponentFactor(pub bool, pub ComponentFactorValue);
+impl ComponentFactor {
+  pub fn new(in_parentheses: bool, component_factor: ComponentFactorValue) -> Self {
+    ComponentFactor(in_parentheses, component_factor)
+  }
+}
+
+impl From<ComponentFactorValue> for ComponentFactor {
+  fn from(value: ComponentFactorValue) -> Self {
+    match &value {
+      ComponentFactorValue::ArithmeticExpr(_) => ComponentFactor(false, value),
+      ComponentFactorValue::ComponentFactor(_) => ComponentFactor(true, value),
+    }
+  }
+}
+
+// BinOp here only can be Time、 Div
+#[derive(Debug, Clone, PartialEq)]
+pub struct ComponentTerm(
+  pub ComponentFactor,
+  pub Option<BinOp>,
+  pub Option<Box<ComponentTerm>>,
+);
+
+impl ComponentTerm {
+  pub fn new(
+    factor: ComponentFactor,
+    op: Option<BinOp>,
+    boxed_term: Option<Box<ComponentTerm>>,
+  ) -> Self {
+    ComponentTerm(factor, op, boxed_term)
+  }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ComponentArithmeticExpr(
+  pub ComponentTerm,
+  pub Option<BinOp>,
+  pub Option<Box<ComponentArithmeticExpr>>,
+);
+
+impl ComponentArithmeticExpr {
+  pub fn new(
+    term: ComponentTerm,
+    op: Option<BinOp>,
+    arith_expr: Option<Box<ComponentArithmeticExpr>>,
+  ) -> Self {
+    ComponentArithmeticExpr(term, op, arith_expr)
+  }
+}
+
+impl Display for ComponentArithmeticExpr {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    write!(
+      f,
+      "ComponentArithmeticExpr({:?}, {:?}, {:?})",
+      self.0,
+      self.1,
+      self.2.to_owned()
+    )
+  }
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct CallExpr(pub Identifier, pub ExpressionList);
 
 impl CallExpr {
@@ -179,14 +263,14 @@ impl CallExpr {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum ExpressionValue {
-  ArithmeticExpr(ArithmeticExpr),
+  ComponentArithmeticExpr(ComponentArithmeticExpr),
 }
 
 impl ExpressionValue {
-  pub fn is_arithmetic_expr(&self) -> bool {
+  pub fn is_component_arithmetic_expr(&self) -> bool {
     matches!(
       self,
-      ExpressionValue::ArithmeticExpr(ArithmeticExpr(term, op, arith_expr))
+      ExpressionValue::ComponentArithmeticExpr(ComponentArithmeticExpr(_term, _op, _arith_expr))
     )
   }
 }

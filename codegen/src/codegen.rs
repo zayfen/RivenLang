@@ -1,6 +1,7 @@
 use parser::ast::{
-  ArithmeticExpr, AssignStmt, CallExpr, CompareExpr, CompareOp, Expression, ExpressionValue,
-  Factor, FactorValue, FunctionStmt, Identifier, IfStmt, LogicExpr, LogicOp, Primary, PrimaryValue,
+  ArithmeticExpr, AssignStmt, CallExpr, CompareExpr, CompareOp, ComponentArithmeticExpr,
+  ComponentFactor, ComponentFactorValue, ComponentTerm, Expression, ExpressionValue, Factor,
+  FactorValue, FunctionStmt, Identifier, IfStmt, LogicExpr, LogicOp, Primary, PrimaryValue,
   Program, ReturnStmt, Statement, StatementValue, StmtList, Term,
 };
 
@@ -57,6 +58,9 @@ pub trait CodeGenerator {
   fn visit_factor(&mut self, factor: &Factor);
   fn visit_term(&mut self, term: &Term);
   fn visit_arithmetic_expr(&mut self, arithmetic_expr: &ArithmeticExpr);
+  fn visit_component_factor(&mut self, factor: &ComponentFactor);
+  fn visit_component_term(&mut self, term: &ComponentTerm);
+  fn visit_component_arithmetic_expr(&mut self, arith_expr: &ComponentArithmeticExpr);
   fn visit_call_expr(&mut self, call_expr: &CallExpr);
   fn visit_call_stmt(&mut self, call_expr: &CallExpr);
   fn visit_expr(&mut self, expr: &Expression);
@@ -156,7 +160,7 @@ impl<'a> CodeGenerator for CCodeGenManager<'a> {
   fn visit_expr(&mut self, expr: &Expression) {
     let expr_value = &expr.0;
     match expr_value {
-      ExpressionValue::ArithmeticExpr(arith_expr) => self.visit_arithmetic_expr(arith_expr),
+      ExpressionValue::ComponentArithmeticExpr(arith_expr) => self.visit_component_arithmetic_expr(arith_expr),
     }
   }
 
@@ -297,5 +301,50 @@ impl<'a> CodeGenerator for CCodeGenManager<'a> {
 
   fn visit_program(&mut self, program: &Program) {
     self.visit_stmt_list(&program.0);
+  }
+
+  fn visit_component_factor(&mut self, factor: &ComponentFactor) {
+    let in_parentheses = factor.0;
+    if in_parentheses {
+      self.emitter.emmit("(");
+    }
+    match &factor.1 {
+      ComponentFactorValue::ArithmeticExpr(expr) => self.visit_arithmetic_expr(expr),
+      ComponentFactorValue::ComponentFactor(Some(factor)) => {
+        self.visit_component_factor(&factor);
+      },
+      ComponentFactorValue::ComponentFactor(None) => ()
+    }
+    if in_parentheses {
+      self.emitter.emmit(")");
+    }
+  }
+
+  fn visit_component_term(&mut self, term: &ComponentTerm) {
+    self.visit_component_factor(&term.0);
+
+    let opt_bin_op = &term.1;
+    let opt_term = &term.2;
+    if let Some(bin_op) = opt_bin_op {
+      self.emitter.emmit(bin_op.to_string().as_str());
+    }
+
+    if let Some(_term) = opt_term {
+      self.visit_component_term(_term);
+    }
+  }
+
+  fn visit_component_arithmetic_expr(&mut self, arithmetic_expr: &ComponentArithmeticExpr) {
+    self.visit_component_term(&arithmetic_expr.0);
+    let opt_bin_op = &arithmetic_expr.1;
+    let opt_box_arithmetic_expr = &arithmetic_expr.2;
+
+    if let Some(bin_op) = opt_bin_op {
+      self.emitter.emmit(bin_op.to_string().as_str());
+    }
+
+    if let Some(arit_expr) = opt_box_arithmetic_expr {
+      self.visit_component_arithmetic_expr(arit_expr);
+    }
   }
 }
